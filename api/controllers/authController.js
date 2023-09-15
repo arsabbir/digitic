@@ -60,6 +60,9 @@ export const login = asyncHandler(async (req, res) => {
 
   // find login user
   const loginUser = await User.findOne({ email });
+
+
+  // user not found
   if (!loginUser) {
     return res.status(400).json({ message: "Not Found User" });
   }
@@ -119,7 +122,7 @@ export const forgetPassword = asyncHandler(async (req, res) => {
   //   { expiresIn: 30 * 60 * 1000 }
   // );
   const ranStr = randomstring.generate(7);
- 
+
   const Link = `http://localhost:5050/api/v1/auth/reset-password/${ranStr}`;
   sentMail({
     subject: "Reset Password",
@@ -133,12 +136,10 @@ export const forgetPassword = asyncHandler(async (req, res) => {
     { new: true }
   );
   // console.log(updateUserToken);
-  return res
-    .status(200)
-    .json({
-      updateUserToken,
-      message: "Sent email,Please check your email inbox",
-    });
+  return res.status(200).json({
+    updateUserToken,
+    message: "Sent email,Please check your email inbox",
+  });
 });
 
 /**

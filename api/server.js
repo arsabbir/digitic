@@ -8,8 +8,11 @@ import authRouter from "./route/auth.js";
 import userRouter from "./route/user.js";
 import blogRouter from "./route/blog.js";
 import productRouter from "./route/product.js";
+import brandRouter from "./route/brand.js";
+import proCategoryRouter from "./route/proCategory.js";
+import blogCategoryRouter from "./route/blogCategory.js";
+import couponRouter from "./route/coupon.js";
 import morgan from "morgan";
-
 
 // initialization
 const app = express();
@@ -30,7 +33,11 @@ app.use(express.static("public"));
 // routing
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/blog", blogRouter);
+app.use("/api/v1/brand", brandRouter);
 app.use("/api/v1/product", productRouter);
+app.use("/api/v1/product-category", proCategoryRouter);
+app.use("/api/v1/blog-category", blogCategoryRouter);
+app.use("/api/v1/coupon", couponRouter);
 app.use("/api/v1/auth", authRouter);
 
 // use error handler

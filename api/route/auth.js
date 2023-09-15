@@ -12,7 +12,7 @@ import tokenVerify from "../middlewares/tokenVerify.js";
 const router = express.Router();
 
 // create routes
-router.route("/register").post(register);
+router.route("/register").post(register); 
 router.route("/login").post(login);
 router.route("/logout").post(tokenVerify, logout);
 router.route("/forget-password").post(forgetPassword);

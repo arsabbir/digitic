@@ -11,7 +11,7 @@ import bcrypt, { compare } from "bcrypt";
  */
 
 export const getAllUser = asyncHandler(async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().populate("wishlist");
   if (users.length === 0) {
     return res.status(400).json({ message: "User not found" });
   }
@@ -29,7 +29,7 @@ export const getSingleUser = asyncHandler(async (req, res) => {
   // get value from params
   const id = req.params.id;
 
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate("wishlist");
 
   if (!user) {
     return res.status(400).json({ message: "User not found" });

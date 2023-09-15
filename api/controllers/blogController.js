@@ -81,7 +81,6 @@ export const deleteBlog = asyncHandler(async (req, res) => {
   return res.status(200).json({ blog, message: "Blog Deleted" });
 });
 
-
 /**
  * @DESC Update blog
  * @ROUTE /api/v1/blog/id
