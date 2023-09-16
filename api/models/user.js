@@ -42,9 +42,10 @@ const userSchema = mongoose.Schema(
       dafault: [],
     },
 
-    address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
+    address: {
+      type: String,
+    },
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    
   },
   {
     timestamps: true,

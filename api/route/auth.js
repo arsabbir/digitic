@@ -2,6 +2,7 @@ import express from "express";
 import {
   forgetPassword,
   login,
+  loginAdmin,
   logout,
   register,
   resetPassword,
@@ -12,8 +13,9 @@ import tokenVerify from "../middlewares/tokenVerify.js";
 const router = express.Router();
 
 // create routes
-router.route("/register").post(register); 
+router.route("/register").post(register);
 router.route("/login").post(login);
+router.route("/login-admin").post(loginAdmin);
 router.route("/logout").post(tokenVerify, logout);
 router.route("/forget-password").post(forgetPassword);
 router.route("/reset-password/:token").post(resetPassword);

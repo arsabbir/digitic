@@ -2,6 +2,9 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
 import bcrypt, { compare } from "bcrypt";
+import Cart from "../models/Cart.js";
+import Product from "../models/Product.js";
+import Coupon from "../models/Coupon.js";
 
 /**
  * @DESC Get all users data
@@ -204,4 +207,173 @@ export const unblockUser = asyncHandler(async (req, res) => {
   );
 
   res.status(200).json({ message: "user is unblock!" });
+});
+
+/**
+ * @DESC Get Wishlist
+ * @ROUTE api/v1/user/wishlist
+ * @METHOD Get
+ * @ACCESS public
+ */
+
+export const getWishllist = asyncHandler(async (req, res) => {
+  console.log("hello");
+  // get value
+  const loginUser = req.me;
+
+  // find user wishlist
+  const getWishlist = await User.findById(loginUser._id).populate("wishlist");
+
+  //  response
+  return res.status(200).json({ getWishlist, message: "Show all wishlist" });
+});
+
+/**
+ * @DESC Save Address
+ * @ROUTE api/v1/user/save-address
+ * @METHOD Get
+ * @ACCESS public
+ */
+
+export const saveAddress = asyncHandler(async (req, res) => {
+  // get login user data
+  const loginUser = req.me;
+
+  // update adress
+  const updateUser = await User.findByIdAndUpdate(loginUser._id, {
+    address: req.body.address,
+  });
+
+  // response
+  return res.status(200).json({ updateUser, message: "Save adress" });
+});
+
+/**
+ * @DESC Add Cart
+ * @ROUTE api/v1/user/cart
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const addCartUser = asyncHandler(async (req, res) => {
+  // get value
+  const { cart } = req.body;
+  const loginUser = req.me;
+
+  let products = [];
+  const user = await User.findById(loginUser._id);
+
+  // check if user already have product in cart
+  const alreadyExistCart = await Cart.findOne({ orderby: user._id });
+
+  // if already Exist Cart true
+  if (alreadyExistCart) {
+    // Use deleteOne to remove the document
+    const removeCart = await Cart.findByIdAndDelete(alreadyExistCart._id);
+    return res.status(200).json({ message: "Cart Remove" });
+  }
+
+  // already exist false
+  let object = {};
+  for (let i = 0; i < cart.length; i++) {
+    object.product = cart[i]._id;
+    object.color = cart[i].color;
+    object.count = cart[i].count;
+    // price
+    let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+    object.price = getPrice.price;
+    products.push(object);
+  }
+
+  //cart total
+  let cartTotal = 0;
+  for (let i = 0; i < products.length; i++) {
+    cartTotal += products[i].price * products[i].count;
+  }
+
+  // and new cart
+  const newCart = await Cart.create({
+    products,
+    cartTotal,
+    orderby: user._id,
+  });
+
+  //response
+  return res.status(200).json({ newCart, message: "Cart Add successfully" });
+});
+
+/**
+ * @DESC remove cart
+ * @ROUTE api/v1/user/cart
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const removeCartUser = asyncHandler(async (req, res) => {
+  // get login user value
+  const loginUser = req.me;
+  // login user data from database
+  const user = await User.findOne(loginUser._id);
+  const cart = await Cart.findOneAndDelete({ orderby: user._id });
+  return res.status(200).json({ cart, message: "Remove Cart" });
+});
+/**
+ * @DESC get user cart
+ * @ROUTE api/v1/user/cart
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const getAllCart = asyncHandler(async (req, res) => {
+  // get login user value
+  const loginUser = req.me;
+  console.log(loginUser);
+  // login user data from database
+  const cart = await Cart.findOne({ orderby: loginUser._id }).pupulate(
+    "product"
+  );
+  return res.status(200).json({ cart, message: "All cart shows of a user" });
+});
+/**
+ * @DESC apply coupon
+ * @ROUTE api/v1/user/applycoupon
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const applyCoupon = asyncHandler(async (req, res) => {
+  // get login user value
+  const { coupon } = req.body;
+  const loginUser = req.me;
+  const user = await User.findOne(loginUser._id);
+  // validate coupon
+  const validCoupon = await Coupon.findOne({ name: coupon });
+
+  if (validCoupon === null) {
+    return res.status(400).json({ message: "Invalid coupon" });
+  }
+
+  let { cartTotal } = await Cart.findOne({ orderby: user._id }).populate(
+    "products.product"
+  );
+
+  // total cart after discount
+  let totalAfterDiscount = (
+    cartTotal -
+    (cartTotal * validCoupon.discount) / 100
+  ).toFixed(2);
+
+  await Cart.findOneAndUpdate(
+    {
+      orderby: user._id,
+      cartTotal: totalAfterDiscount,
+    },
+    { new: true }
+  );
+
+  console.log(cartTotal);
+  console.log(totalAfterDiscount);
+  return res
+    .status(200)
+    .json({ totalAfterDiscount, message: "Apply Coupon Done" });
 });
