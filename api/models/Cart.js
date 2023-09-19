@@ -11,7 +11,10 @@ const cartSchema = mongoose.Schema({
     },
   ],
   cartTotal: Number,
-  totalAfterDiscount: Number,
+  totalAfterDiscount: {
+    type: Number,
+    default: null,
+  },
   orderby: {
     type: mongoose.Schema.Types.ObjectId,
   },

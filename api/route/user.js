@@ -3,15 +3,20 @@ import {
   addCartUser,
   applyCoupon,
   blockUser,
+  createOrder,
   createUser,
   deleteUser,
   getAllCart,
+  getAllOrders,
   getAllUser,
+  getOrder,
+  getOrderUserId,
   getSingleUser,
   getWishllist,
   removeCartUser,
   saveAddress,
   unblockUser,
+  updateOrderStatus,
   updatePassword,
   updateUser,
 } from "../controllers/userController.js";
@@ -29,11 +34,20 @@ router.route("/").get(getAllUser).post(createUser);
 router.route("/wishlist").get(getWishllist);
 // save address
 router.route("/save-address").put(saveAddress).patch(saveAddress);
-// add Cart and Delete Cart and Show All Cart 
+// add Cart and Delete Cart and Show All Cart
 router.route("/cart").post(addCartUser).delete(removeCartUser).get(getAllCart);
 // apply coupon
 router.route("/applycoupon").post(applyCoupon);
-
+// order create
+router.route("/cart/cash-order").post(createOrder);
+// all orders
+router.route("/allorders").get(isAdmin, getAllOrders);
+// get single user order
+router.route("/getorder").get(getOrder);
+// get order by user id only seen admin
+router.route("/getorderuserid/:id").get(isAdmin, getOrderUserId);
+// update order status
+router.route("/order/update-order/:id").put(isAdmin, updateOrderStatus);
 
 // user (single show,delete,update)
 router

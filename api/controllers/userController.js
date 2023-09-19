@@ -5,7 +5,8 @@ import bcrypt, { compare } from "bcrypt";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import Coupon from "../models/Coupon.js";
-
+import uniqid from "uniqid";
+import Order from "../models/Order.js";
 /**
  * @DESC Get all users data
  * @ROUTE /api/v1/user
@@ -265,7 +266,7 @@ export const addCartUser = asyncHandler(async (req, res) => {
 
   // check if user already have product in cart
   const alreadyExistCart = await Cart.findOne({ orderby: user._id });
-
+  console.log(alreadyExistCart);
   // if already Exist Cart true
   if (alreadyExistCart) {
     // Use deleteOne to remove the document
@@ -284,7 +285,7 @@ export const addCartUser = asyncHandler(async (req, res) => {
     object.price = getPrice.price;
     products.push(object);
   }
-
+  console.log("Add");
   //cart total
   let cartTotal = 0;
   for (let i = 0; i < products.length; i++) {
@@ -327,13 +328,14 @@ export const removeCartUser = asyncHandler(async (req, res) => {
 export const getAllCart = asyncHandler(async (req, res) => {
   // get login user value
   const loginUser = req.me;
-  console.log(loginUser);
+
   // login user data from database
   const cart = await Cart.findOne({ orderby: loginUser._id }).pupulate(
     "product"
   );
   return res.status(200).json({ cart, message: "All cart shows of a user" });
 });
+
 /**
  * @DESC apply coupon
  * @ROUTE api/v1/user/applycoupon
@@ -346,13 +348,19 @@ export const applyCoupon = asyncHandler(async (req, res) => {
   const { coupon } = req.body;
   const loginUser = req.me;
   const user = await User.findOne(loginUser._id);
+
   // validate coupon
   const validCoupon = await Coupon.findOne({ name: coupon });
 
   if (validCoupon === null) {
     return res.status(400).json({ message: "Invalid coupon" });
   }
-
+  const cartCheck = await Cart.findOne({ orderby: user._id });
+  console.log(cartCheck);
+  // if cart is empty
+  if (cartCheck == null) {
+    return res.status(400).json({ message: "Cart is empty" });
+  }
   let { cartTotal } = await Cart.findOne({ orderby: user._id }).populate(
     "products.product"
   );
@@ -363,17 +371,161 @@ export const applyCoupon = asyncHandler(async (req, res) => {
     (cartTotal * validCoupon.discount) / 100
   ).toFixed(2);
 
-  await Cart.findOneAndUpdate(
+  const discountCart = await Cart.findOneAndUpdate({
+    orderby: user._id,
+    totalAfterDiscount,
+  });
+
+  return res
+    .status(200)
+    .json({ totalAfterDiscount, message: "Apply Coupon Done" });
+});
+
+/**
+ * @DESC create order
+ * @ROUTE api/v1/user/cart/cash-order
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const createOrder = asyncHandler(async (req, res) => {
+  // get value
+  const { COD, couponApplied } = req.body;
+  const loginUser = req.me;
+  // validation
+  // if (!COD || !couponApplied) {
+  //   return res
+  //   .status(200)
+  //   .json({ message: "All field are required" });
+  // }
+  if (!COD) {
+    return res.status(200).json({ message: "Create cash order failed" });
+  }
+
+  // get login user data from database
+  const user = await User.findOne(loginUser._id);
+  // user cart
+  let userCart = await Cart.findOne({ orderby: user._id });
+  if (!userCart) {
+    return res.status(200).json({ message: "Cart Empty" });
+  }
+  let finalAmount = 0;
+
+  // if couponApplied true
+  if (couponApplied && userCart.totalAfterDiscount) {
+    finalAmount = userCart.totalAfterDiscount;
+  } else {
+    finalAmount = userCart.cartTotal;
+  }
+
+  // new order
+  let newOrder = await Order.create({
+    products: userCart.products,
+    paymentIntent: {
+      id: uniqid(),
+      method: "COD",
+      amouunt: finalAmount,
+      created: Date.now,
+      currency: "usd",
+    },
+    orderBy: user._id,
+    orderStatus: "Cash On Delivery",
+  });
+
+  let update = userCart.products.map((item) => {
+    return {
+      updateOne: {
+        filter: { _id: item.product._id },
+        update: { $inc: { quantity: -item.count, sold: +item.count } },
+      },
+    };
+  });
+console.log(update.filter,update.update);
+  const updated = await Product.bulkWrite(update, {});
+  return res.json({ message: "Order successfull" });
+});
+
+/**
+ * @DESC Get all order
+ * @ROUTE api/v1/user/allorders
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const getAllOrders = asyncHandler(async (req, res) => {
+  const allUserorders = await Order.find()
+    .populate("products.product")
+    .populate("orderBy")
+    .exec();
+
+  return res.json({allUserorders, message: "All Order Show" });
+});
+
+/**
+ * @DESC Get Single Order
+ * @ROUTE api/v1/user/cash-order
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const getOrder = asyncHandler(async (req, res) => {
+  // login user
+  const loginUser = req.me;
+
+  const userOrder = await Order.findOne({ orderby: loginUser._id })
+    .populate("products.product")
+    .populate("orderby");
+
+  // response
+  return res.json({userOrder, message: "All Order Show" });
+});
+/**
+ * @DESC Get order by user id
+ * @ROUTE api/v1/user/getorderbyuserid
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const getOrderUserId = asyncHandler(async (req, res) => {
+  // login user
+  const  {_id}  = req.params;
+
+  const userOrder = await Order.findOne({ orderby: _id })
+    .populate("products.product")
+    .populate("orderBy");
+if (!userOrder) {
+  return res.json({ message: "This User not order" });
+}
+  // response
+  return res.json({userOrder, message: "User Order Show" });
+});
+
+/**
+ * @DESC Update order status
+ * @ROUTE api/v1/user/order/update-order/:id
+ * @METHOD Post
+ * @ACCESS public
+ */
+
+export const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
+  // validation
+  if (!status) {
+    return res.status(400).json({ message: "Status is required" });
+  }
+  // update status
+  const updateStatus = await Order.findByIdAndUpdate(
+    id,
     {
-      orderby: user._id,
-      cartTotal: totalAfterDiscount,
+      orderStatus: status,
+      paymentIntent: { status: status },
     },
     { new: true }
   );
 
-  console.log(cartTotal);
-  console.log(totalAfterDiscount);
   return res
     .status(200)
-    .json({ totalAfterDiscount, message: "Apply Coupon Done" });
+    .json({ updateStatus, message: "Order updated successfully" });
 });

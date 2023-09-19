@@ -238,69 +238,63 @@ export const addWishlist = asyncHandler(async (req, res) => {
  */
 
 export const rating = asyncHandler(async (req, res) => {
-  // login user
+  // Get user and input data
   const loginUser = req.me;
-
-  // get value
   const { star, comment, productId } = req.body;
 
-  // validation
+  // Validate input
   if (!star || !comment || !productId) {
-    return res.status(200).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "All fields are required" });
   }
 
-  // find product data from database
+  // Find the product
   const product = await Product.findById(productId);
 
-  // find product rated
-  const alreadyRated = product?.ratings?.includes(loginUser._id);
-  if (alreadyRated) {
-    const updateRating = await Product.updateOne(
-      {
-        ratings: { $elemMatch: alreadyRated },
-      },
-      {
-        $set: {
-          "ratings.$.star": star,
-          "ratings.$.comment": comment,
-        },
-      }
-    );
-  } else {
-    const rateProduct = await Product.findByIdAndUpdate(
-      product._id,
-      {
-        $push: {
-          ratings: {
-            star: star,
-            comment: comment,
-            postedby: loginUser._id,
-          },
-        },
-      },
-      {
-        new: true,
-      }
-    );
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
   }
 
-  const getallratings = await Product.findById(productId);
-  let totalRating = getallratings.ratings.length;
-
-  let ratingsum = getallratings.ratings
-    .map((item) => item.star)
-    .reduce((prev, curr) => prev + curr, 0);
-  let actualRating = Math.round(ratingsum / totalRating);
-  console.log(actualRating);
-  let finalproduct = await Product.findByIdAndUpdate(
-    productId,
-    {
-      totalRating: actualRating,
-    },
-    { new: true }
+  // Check if the user has already rated
+  const alreadyRated = product.ratings.some(
+    (rating) => rating.postedby == loginUser._id
   );
 
-  return res.status(200).json({ finalproduct, message: "Rating Success full" });
+  if (alreadyRated) {
+    // Update the existing rating
+    // product.ratings.forEach((rating) => {
+    //   if (rating.postedby.equals(loginUser._id)) {
+    //     rating.star = star;
+    //     rating.comment = comment;
+    //   }
+    // });
+
+    (product.ratings[alreadyRated].star = star),
+    (product.ratings[alreadyRated].comment = comment);
+  } else {
+    // Add a new rating
+    product.ratings.push({
+      star,
+      comment,
+      postedby: loginUser._id,
+    });
+  }
+
+  // Calculate the new total rating
+  const totalRating = product.ratings.reduce(
+    (prev, curr) => prev + curr.star,
+    0
+  );
+  const avarageRating = (totalRating / product.ratings.length).toFixed(1);
+
+  // Update the product's totalRating
+  product.totalRating = avarageRating;
+
+  // Save the updated product
+  const updatedProduct = await product.save();
+
+  return res
+    .status(200)
+    .json({ finalProduct: updatedProduct, message: "Rating successful" });
 });
 
 /**
