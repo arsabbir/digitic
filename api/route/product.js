@@ -5,12 +5,10 @@ import {
   deleteProduct,
   getAllProduct,
   getSingleProduct,
-  productImageUpload,
   rating,
   updateProduct,
 } from "../controllers/productController.js";
 import tokenVerify from "../middlewares/tokenVerify.js";
-import { ProductMulter } from "../utils/multer.js";
 
 const router = express.Router();
 
@@ -27,7 +25,7 @@ router.route("/wishlist").put(addWishlist).patch(addWishlist);
 router.route("/rating").put(rating).patch(rating);
 
 // Routes for managing images
-router.route("/image/:id").put(ProductMulter,productImageUpload).patch(ProductMulter,productImageUpload);
+// router.route("/image/:id").put(ProductMulter,productImageUpload).patch(ProductMulter,productImageUpload);
 
 // routes for managing the single product(update,delete,show)
 router

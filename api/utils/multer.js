@@ -8,4 +8,4 @@ const storage = multer.diskStorage({
 
 export const CategoryMulter = multer({ storage }).single("category-photo");
 export const BrandMulter = multer({ storage }).single("brand-photo");
-export const ProductMulter = multer({ storage }).array("productPhotos");
+export const PhotoMulter = multer({ storage }).array("photo");

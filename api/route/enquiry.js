@@ -1,12 +1,12 @@
 import express from "express";
 
 import {
-  createBrand,
-  deleteBrand,
-  getAllBrand,
-  getSingleBrand,
-  updateBrand,
-} from "../controllers/brandController.js";
+  createEnquiry,
+  deleteEnquiry,
+  getAllEnquiry,
+  getSingleEnquiry,
+  updateEnquiry,
+} from "../controllers/enquiryController.js";
 import tokenVerify from "../middlewares/tokenVerify.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 
@@ -16,13 +16,13 @@ const router = express.Router();
 router.use(tokenVerify);
 
 // create route
-router.route("/").get(getAllBrand).post(isAdmin,createBrand);
+router.route("/").get(getAllEnquiry).post(isAdmin,createEnquiry);
 router
   .route("/:id")
-  .get(getSingleBrand)
-  .delete(isAdmin,deleteBrand)
-  .put(isAdmin,updateBrand)
-  .patch(isAdmin,updateBrand);
+  .get(getSingleEnquiry)
+  .delete(isAdmin,deleteEnquiry)
+  .put(isAdmin,updateEnquiry)
+  .patch(isAdmin,updateEnquiry);
 
 // export default router
 export default router;

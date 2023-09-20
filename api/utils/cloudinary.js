@@ -9,12 +9,18 @@ cloudinary.config({
 
 export const ImageUpload = async (path) => {
   const result = await cloudinary.uploader.upload(path);
-  return result.secure_url;
+  return {
+    url: result.secure_url,
+    publicId: result.public_id,
+    asset_id: result.asset_id,
+  };
 };
 
 export const DeleteImage = async (data) => {
-  const publicId = data.match(/\/([^/]+)$/)[1].split(".")[0];
-  await cloudinary.uploader.destroy(publicId);
+  // If want to extract public id from url
+  // const publicId = data.match(/\/([^/]+)$/)[1].split(".")[0];
+
+  await cloudinary.uploader.destroy(data); 
 };
 
 export const UpdateImage = async (oldImage, newpath) => {

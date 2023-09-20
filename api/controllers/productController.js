@@ -3,7 +3,7 @@ import Product from "../models/Product.js";
 import { createSlug } from "../helper/slug.js";
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/User.js";
-import { ImageUpload } from "../utils/cloudinary.js";
+
 
 cloudinary.config({
   cloud_name: "drq2ieflq",
@@ -297,44 +297,44 @@ export const rating = asyncHandler(async (req, res) => {
     .json({ finalProduct: updatedProduct, message: "Rating successful" });
 });
 
-/**
- * @DESC Image Upload
- * @ROUTE /api/v1/product/image-upload
- * @method PUT/PATCH
- * @access public
- */
-export const productImageUpload = asyncHandler(async (req, res) => {
-  // get value
-  const { id } = req.params;
+// /**
+//  * @DESC Image Upload
+//  * @ROUTE /api/v1/product/image-upload
+//  * @method PUT/PATCH
+//  * @access public
+//  */
+// export const productImageUpload = asyncHandler(async (req, res) => {
+//   // get value
+//   const { id } = req.params;
 
-  // check data
-  const product = await Product.findById(id);
+//   // check data
+//   const product = await Product.findById(id);
 
-  // Product not found
-  if (!product) {
-    return res.status(200).json({ message: "Data not found" });
-  }
+//   // Product not found
+//   if (!product) {
+//     return res.status(200).json({ message: "Data not found" });
+//   }
 
-  // File management
+//   // File management
 
-  let photos = [];
-  if (req.files) {
-    for (let i = 0; i < req.files.length; i++) {
-      // upload image and wait for it to resolve
-      try {
-        const uploadedImage = await ImageUpload(req.files[i].path);
-        // photos.push(uploadedImage);
+//   let photos = [];
+//   if (req.files) {
+//     for (let i = 0; i < req.files.length; i++) {
+//       // upload image and wait for it to resolve
+//       try {
+//         const uploadedImage = await ImageUpload(req.files[i].path);
+//         // photos.push(uploadedImage);
 
-        // Update the product with the uploaded image path
-        const upImage = await Product.findByIdAndUpdate(product._id, {
-          $push: { photos: uploadedImage },
-        });
-      } catch (error) {
-        // Handle any errors that occurred during image upload
-        console.error("Image upload error:", error);
-      }
-    }
-  }
+//         // Update the product with the uploaded image path
+//         const upImage = await Product.findByIdAndUpdate(product._id, {
+//           $push: { photos: uploadedImage },
+//         });
+//       } catch (error) {
+//         // Handle any errors that occurred during image upload
+//         console.error("Image upload error:", error);
+//       }
+//     }
+//   }
 
-  return res.status(200).json({ message: "Image Upload Success" });
-});
+//   return res.status(200).json({ message: "Image Upload Success" });
+// });
