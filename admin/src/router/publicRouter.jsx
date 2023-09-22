@@ -1,5 +1,6 @@
 import ForgotPassword from "../pages/forgotPassword/ForgotPassword.jsx";
 import Login from "../pages/login/Login.jsx";
+import ResetPassword from "../pages/resetPassword/ResetPassword.jsx";
 
 // Create public router
 const publicRouter = [
@@ -9,8 +10,12 @@ const publicRouter = [
   },
 
   {
-    path: "/forgot",
+    path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
 ];
 

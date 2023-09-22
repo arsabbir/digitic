@@ -218,7 +218,7 @@ export const unblockUser = asyncHandler(async (req, res) => {
  */
 
 export const getWishllist = asyncHandler(async (req, res) => {
-  console.log("hello");
+  
   // get value
   const loginUser = req.me;
 

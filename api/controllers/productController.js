@@ -4,7 +4,6 @@ import { createSlug } from "../helper/slug.js";
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/User.js";
 
-
 cloudinary.config({
   cloud_name: "drq2ieflq",
   api_key: "718961483599887",
@@ -255,21 +254,18 @@ export const rating = asyncHandler(async (req, res) => {
   }
 
   // Check if the user has already rated
-  const alreadyRated = product.ratings.some(
-    (rating) => rating.postedby == loginUser._id
+  const alreadyRated = product.ratings.some((rating) =>
+    rating.postedby.equals(loginUser._id)
   );
 
   if (alreadyRated) {
     // Update the existing rating
-    // product.ratings.forEach((rating) => {
-    //   if (rating.postedby.equals(loginUser._id)) {
-    //     rating.star = star;
-    //     rating.comment = comment;
-    //   }
-    // });
-
-    (product.ratings[alreadyRated].star = star),
-    (product.ratings[alreadyRated].comment = comment);
+    product.ratings.forEach((rating) => {
+      if (rating.postedby.equals(loginUser._id)) {
+        rating.star = star;
+        rating.comment = comment;
+      }
+    });
   } else {
     // Add a new rating
     product.ratings.push({
