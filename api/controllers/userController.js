@@ -17,9 +17,9 @@ import Order from "../models/Order.js";
 export const getAllUser = asyncHandler(async (req, res) => {
   const users = await User.find().populate("wishlist");
   if (users.length === 0) {
-    return res.status(400).json({ message: "User not found" });
+    return res.status(400).json({ message: "User not found" }).select("-password");
   }
-  return res.status(400).json(users);
+  return res.status(400).json({users});
 });
 
 /**
@@ -33,12 +33,12 @@ export const getSingleUser = asyncHandler(async (req, res) => {
   // get value from params
   const id = req.params.id;
 
-  const user = await User.findById(id).populate("wishlist");
+  const user = await User.findById(id).populate("wishlist").select("-password");
 
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
-  return res.status(200).json(user);
+  return res.status(200).json({user});
 });
 
 /**

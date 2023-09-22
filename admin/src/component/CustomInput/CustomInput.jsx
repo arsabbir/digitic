@@ -5,9 +5,9 @@ const CustomInput = (props) => {
     i_id,
     i_class,
     name,
-    val,
-    onChng,
-    onBlr,
+    value,
+    onChange,
+    onBlur,
     color = "text-secondary",
   } = props;
   return (
@@ -18,9 +18,9 @@ const CustomInput = (props) => {
         id={i_id}
         placeholder={label}
         name={name}
-        value={val}
-        onChange={onChng}
-        onBlur={onBlr}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
       />
       <label className={`${color}`} htmlFor={label}>
         {label}

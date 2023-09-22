@@ -50,47 +50,45 @@ export const register = asyncHandler(async (req, res) => {
  */
 
 export const login = asyncHandler(async (req, res) => {
-  // get value from body
+  // Get values from the request body
   const { email, password } = req.body;
 
-  // vallidation
+  // Validation
   if (!email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  // find login user
+  // Find the user by email
   const loginUser = await User.findOne({ email });
 
-
-  // user not found
+  // User not found
   if (!loginUser) {
-    return res.status(400).json({ message: "Not Found User" });
+    return res.status(400).json({ message: "User not found" });
   }
 
-  //   password check
+  // Check the password
   const passwordCheck = await bcrypt.compare(password, loginUser.password);
+
   if (!passwordCheck) {
     return res.status(400).json({ message: "Wrong Password" });
   }
 
-  //   crate acess token
+  // Create an access token
   const token = jwt.sign(
     { email: loginUser.email },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRE }
   );
 
-  //   set token cookie
+  // Set the token as a cookie
   res.cookie("accessToken", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: process.env.APP_ENV == "Development" ? false : true,
+    secure: process.env.APP_ENV === "development" ? false : true,
     sameSite: "strict",
   });
 
-  return res
-    .status(200)
-    .json({ token, user: loginUser, message: "Login Successfull" });
+  return res.status(200).json({ user: loginUser, message: "Login Successful" });
 });
 
 /**
@@ -171,7 +169,6 @@ export const resetPassword = asyncHandler(async (req, res) => {
   return res.status(200).json({ user, message: "Password reset Successfull" });
 });
 
-
 /**
  * @DESC Login Admin
  * @ROUTE /api/v1/auth/login-admin
@@ -189,19 +186,17 @@ export const loginAdmin = asyncHandler(async (req, res) => {
   }
 
   // find admin user
-  const findAdmin = await User.findOne({ email });
-
+  const findAdmin = await User.findOne({ email }).select("-password");
 
   // user not found
   if (!findAdmin) {
     return res.status(400).json({ message: "Not Found User" });
   }
 
-  // check admin 
+  // check admin
   if (findAdmin.role !== "admin") {
     return res.status(400).json({ message: "You are not admin" });
   }
-
 
   //   password check
   const passwordCheck = await bcrypt.compare(password, findAdmin.password);
