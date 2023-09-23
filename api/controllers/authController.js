@@ -63,14 +63,15 @@ export const login = asyncHandler(async (req, res) => {
 
   // User not found
   if (!loginUser) {
-    return res.status(400).json({ message: "User not found" });
+    return res
+      .status(400)
+      .json({ message: "We cannot find an account with that email address" });
   }
 
   // Check the password
   const passwordCheck = await bcrypt.compare(password, loginUser.password);
-
-  if (!passwordCheck) {
-    return res.status(400).json({ message: "Wrong Password" });
+  if (passwordCheck == false) {
+    return res.status(400).json({ message: "Your password is incorrect" });
   }
 
   // Create an access token

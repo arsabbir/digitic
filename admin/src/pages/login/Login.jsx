@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { getAuthData } from "../../features/auth/authSlice.js";
 import { useEffect } from "react";
+import { createToast } from "../../utils/Toast.js";
+import { sweetAlertBasic } from "../../utils/SweetAlert.js";
 
 // yup configure
 let yupSchema = object({
@@ -21,8 +23,6 @@ const Login = () => {
   const { isSuccess, message, user, isError, isLoading } =
     useSelector(getAuthData);
 
-  // useEffect
-
   // configure formik
   const formik = useFormik({
     initialValues: {
@@ -36,8 +36,10 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user && isSuccess) {
       navigate("/");
+    } else {
+      navigate("");
     }
   }, [user, isError, isSuccess, isLoading]);
   return (
@@ -55,9 +57,12 @@ const Login = () => {
         <p className="text-center text-black">
           Login to your account to continue.
         </p>
-        <div className="error text-center">
-          {message.message == "Rejected" ? "You are not Admin" : ""}
-        </div>
+        {isError && (
+          <div className="p-2 text-center text-black  border border-danger rounded-1 shadow-sm">
+            <h6  className=" mt-1 text-danger">There was a problem</h6>
+            {isError == true ? `${message}` : ""}
+          </div>
+        )}
 
         <form onSubmit={formik.handleSubmit}>
           <CustomInput

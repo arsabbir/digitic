@@ -16,17 +16,19 @@ console.log(response);
 });
 
 // logged in user
-// export const getLoggedInUser = createAsyncThunk(
-//   "auth/getLoggedInUser",
-//   async () => {
-//     console.log("hello");
-//     try {
-//       const response = await axios.get(`${BaseUrl}auth/me`, {
-//         withCredentials: true,
-//       });
-//       return response.data;
-//     } catch (error) {
-//       throw new Error(error.response.data.message);
-//     }
-//   }
-// );
+export const getLoggedInUser = createAsyncThunk(
+  "auth/getLoggedInUser",
+  async () => {
+   
+    try {
+      const response = await axios.get(`${BaseUrl}auth/me`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  }
+);
+
+
