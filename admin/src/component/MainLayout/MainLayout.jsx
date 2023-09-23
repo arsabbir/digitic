@@ -18,32 +18,45 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { Button, Dropdown, Layout, Menu, Space, theme } from "antd";
 const { Header, Sider, Content } = Layout;
 import { Link, useNavigate } from "react-router-dom";
-
-// dropdown menu item
-const items = [
-  {
-    label: <a href="https://www.antgroup.com">1st menu item</a>,
-    key: "0",
-  },
-  {
-    label: <a href="https://www.aliyun.com">2nd menu item</a>,
-    key: "1",
-  },
-  {
-    type: "divider",
-  },
-  {
-    label: "3rd menu item",
-    key: "3",
-  },
-];
+import { useDispatch } from "react-redux";
+import { logout } from "../../features/auth/authApiSlice.js";
 
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  // useState
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [collapsed, setCollapsed] = useState(false);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  // handler
+  const handleLogoutUser = (e) => {
+    e.preventDefault();
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  // dropdown menu item
+  const items = [
+    {
+      label: <a href="https://www.antgroup.com">1st menu item</a>,
+      key: "0",
+    },
+    {
+      label: <a href="https://www.aliyun.com">2nd menu item</a>,
+      key: "1",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: <p onClick={(e) => handleLogoutUser(e)}>Logout</p>,
+      key: "3",
+    },
+  ];
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>

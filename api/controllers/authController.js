@@ -100,6 +100,7 @@ export const login = asyncHandler(async (req, res) => {
  */
 
 export const logout = asyncHandler(async (req, res) => {
+  console.log("logout");
   res.clearCookie("accessToken");
   return res.status(200).json({ message: "Logout successfull" });
 });

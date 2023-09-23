@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (data) => {
     const response = await axios.post(`${BaseUrl}auth/login`, data, {
       withCredentials: true,
     });
-console.log(response);
+
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -19,7 +19,6 @@ console.log(response);
 export const getLoggedInUser = createAsyncThunk(
   "auth/getLoggedInUser",
   async () => {
-   
     try {
       const response = await axios.get(`${BaseUrl}auth/me`, {
         withCredentials: true,
@@ -31,4 +30,16 @@ export const getLoggedInUser = createAsyncThunk(
   }
 );
 
-
+// logout
+export const logout = createAsyncThunk("auth/logout", async () => {
+  console.log("okay");
+  try {
+    const response = await axios.post(`${BaseUrl}auth/logout`,null, {
+      withCredentials: true,
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+});

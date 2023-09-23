@@ -39,7 +39,7 @@ const Login = () => {
     if (user && isSuccess) {
       navigate("/");
     } else {
-      navigate("");
+      navigate("/login");
     }
   }, [user, isError, isSuccess, isLoading]);
   return (

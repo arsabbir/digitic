@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getLoggedInUser, loginUser } from "./authApiSlice.js";
+import { getLoggedInUser, loginUser, logout } from "./authApiSlice.js";
 
 const authSlice = createSlice({
   name: "auth",
@@ -16,18 +16,18 @@ const authSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
+    // login
     builder.addCase(loginUser.pending, (state, action) => {
       state.isLoading = true;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
-      console.log();
       state.isLoading = false;
       state.isError = true;
       state.message = action.error.message;
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.user = action.payload.user;
+      (state.isSuccess = true), (state.user = action.payload.user);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       state.message = "";
     });
@@ -38,6 +38,17 @@ const authSlice = createSlice({
     });
     builder.addCase(getLoggedInUser.fulfilled, (state, action) => {
       state.user = action.payload;
+      state.message = action.payload.message;
+    });
+
+    // logout
+    builder.addCase(logout.rejected, (state, action) => {
+      state.isError = true;
+      state.message = action.error.message;
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      localStorage.removeItem("user");
+      state.user = null;
       state.message = action.payload.message;
     });
   },
