@@ -63,9 +63,9 @@ export const createProduct = asyncHandler(async (req, res) => {
   productData.slug = createSlug(name);
 
   // create new product
-  const product = await Product.create(productData);
+  const products = await Product.create(productData);
 
-  res.status(200).json({ product, message: "product created successfully" });
+  res.status(200).json({ products, message: "product created successfully" });
 });
 
 /**

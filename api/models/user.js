@@ -41,6 +41,10 @@ const userSchema = mongoose.Schema(
       type: Array,
       dafault: [],
     },
+    status:{
+      type:Boolean,
+      default: false,
+    },
 
     address: {
       type: String,

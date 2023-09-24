@@ -13,13 +13,14 @@ export const uploadPhoto = asyncHandler(async (req, res) => {
   // File management
 
   let photos = [];
+  console.log(req.files);
   if (req.files) {
     for (let i = 0; i < req.files.length; i++) {
       // upload image and wait for it to resolve
 
       const uploadedImage = await ImageUpload(req.files[i].path);
       photos.push(uploadedImage);
-      console.log(photos);
+      
     }
   }
 

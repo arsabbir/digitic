@@ -15,7 +15,7 @@ export const getAllColor = asyncHandler(async (req, res) => {
   if (colors.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  return res.status(200).json(colors);
+  return res.status(200).json({colors});
 });
 
 /**

@@ -225,3 +225,8 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     .status(200)
     .json({ token, user: findAdmin, message: "Login Successfull" });
 });
+
+
+export const loggedInUser = asyncHandler(async (req, res) => {
+  return res.status(200).json(req.me);
+});

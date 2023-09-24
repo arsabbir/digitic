@@ -31,8 +31,8 @@ export const createBlog = asyncHandler(async (req, res) => {
  */
 
 export const getAllBlog = asyncHandler(async (req, res) => {
-  const getBlogs = await Blog.find();
-  return res.status(200).json({ getBlogs, message: "All blog show" });
+  const blogs = await Blog.find();
+  return res.status(200).json({ blogs, message: "All blog show" });
 });
 
 /**

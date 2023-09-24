@@ -2,17 +2,13 @@ import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCustomer } from "../../features/customer/customerApiSlice.js";
-import { getCustomerState } from "../../features/customer/customerSlice.js";
+
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
+import { getproductState } from "../../features/product/productSlice.js";
 
-
-import { getBlogState } from "../../features/blog/BlogSlice.js";
-import { getAllBlogCate } from "../../features/blog/BlogApiSlice.js";
-
-const Customer = () => {
+const ProCategory = () => {
   const [search, setSearch] = useState(null);
   // hanlder section
   const handleEditCustomer = () => {};
@@ -25,12 +21,11 @@ const Customer = () => {
   const dispatch = useDispatch();
 
   // selector
-  const { blogCategories, isError, isLoading, message } =
-    useSelector(getBlogState);
+  const { proCategories, isError, isLoading, message } =
+    useSelector(getproductState);
 
-  useEffect(() => {
-    dispatch(getAllBlogCate);
-  }, [dispatch, blogCategories, isError, isLoading, message]);
+  // dipatch
+  useEffect(() => {}, [dispatch, proCategories, isError, isLoading, message]);
 
   const cols = [
     {
@@ -80,7 +75,7 @@ const Customer = () => {
         className="shadow-sm wolmart-table"
         title="All Customer Data"
         columns={cols}
-        data={blogCategories}
+        data={proCategories}
         selectableRow
         highlightOnHover
         pagination
@@ -102,4 +97,4 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default ProCategory;

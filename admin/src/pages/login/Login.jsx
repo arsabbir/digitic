@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import CustomInput from "../../component/customInput/customInput.jsx";
+import CustomInput from "../../component/CustomInput/CustomInput.jsx";
 import { object, string } from "yup";
 import { loginUser } from "../../features/auth/authApiSlice.js";
 import { useDispatch, useSelector } from "react-redux";

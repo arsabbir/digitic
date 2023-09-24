@@ -11,12 +11,12 @@ import { response } from "express";
  */
 
 export const getAllEnquiry = asyncHandler(async (req, res) => {
-  const enquirys = await Enquiry.find();
+  const enquiries = await Enquiry.find();
 
-  if (enquirys.length === 0) {
+  if (enquiries.length === 0) {
     return res.status(404).json({ message: "Enquiry  data not found" });
   }
-  return res.status(200).json(enquirys);
+  return res.status(200).json({enquiries});
 });
 
 /**

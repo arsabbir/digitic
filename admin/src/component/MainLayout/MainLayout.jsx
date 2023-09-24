@@ -71,8 +71,8 @@ const MainLayout = () => {
           mode="inline"
           defaultSelectedKeys={[""]}
           onClick={({ key }) => {
-            if (key == "signout") {
-              //
+            if (key === "logout") {
+              navigate("/login");
             } else {
               navigate(key);
             }
@@ -87,6 +87,7 @@ const MainLayout = () => {
               key: "customers",
               icon: <AiOutlineUser className="fs-4" />,
               label: "Customers",
+             
             },
             {
               key: "Catalog",
@@ -126,10 +127,10 @@ const MainLayout = () => {
                 {
                   key: "color",
                   icon: <AiOutlineBgColors className="fs-4" />,
-                  label: "Color",
+                  label: "Add Color",
                 },
                 {
-                  key: "list-color",
+                  key: "color-list",
                   icon: <AiOutlineBgColors className="fs-4" />,
                   label: "Color List",
                 },

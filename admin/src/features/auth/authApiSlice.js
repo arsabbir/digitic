@@ -34,7 +34,7 @@ export const getLoggedInUser = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async () => {
   console.log("okay");
   try {
-    const response = await axios.post(`${BaseUrl}auth/logout`,null, {
+    const response = await axios.post(`${BaseUrl}auth/logout`, null, {
       withCredentials: true,
     });
     console.log(response);
@@ -43,3 +43,5 @@ export const logout = createAsyncThunk("auth/logout", async () => {
     throw new Error(error.response.data.message);
   }
 });
+
+

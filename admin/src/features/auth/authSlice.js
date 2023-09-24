@@ -45,8 +45,9 @@ const authSlice = createSlice({
     builder.addCase(logout.rejected, (state, action) => {
       state.isError = true;
       state.message = action.error.message;
-    });
-    builder.addCase(logout.fulfilled, (state, action) => {
+    })
+   .addCase(logout.fulfilled, (state, action) => {
+      state.isError = false;
       localStorage.removeItem("user");
       state.user = null;
       state.message = action.payload.message;

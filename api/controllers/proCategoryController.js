@@ -10,12 +10,12 @@ import { createSlug } from "../helper/slug.js";
  */
 
 export const getAllProCategory = asyncHandler(async (req, res) => {
-  const proCategorys = await ProCategory.find();
+  const proCategories = await ProCategory.find();
 
-  if (proCategorys.length === 0) {
+  if (proCategories.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  return res.status(200).json(proCategorys);
+  return res.status(200).json({ proCategories });
 });
 
 /**

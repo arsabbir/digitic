@@ -15,11 +15,15 @@ import Order from "../models/Order.js";
  */
 
 export const getAllUser = asyncHandler(async (req, res) => {
+
   const users = await User.find().populate("wishlist");
   if (users.length === 0) {
-    return res.status(400).json({ message: "User not found" }).select("-password");
+    return res
+      .status(400)
+      .json({ message: "User not found" })
+      .select("-password");
   }
-  return res.status(400).json({users});
+  return res.status(200).json({ users });
 });
 
 /**
@@ -38,7 +42,7 @@ export const getSingleUser = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
-  return res.status(200).json({user});
+  return res.status(200).json({ user });
 });
 
 /**
@@ -218,7 +222,6 @@ export const unblockUser = asyncHandler(async (req, res) => {
  */
 
 export const getWishllist = asyncHandler(async (req, res) => {
-  
   // get value
   const loginUser = req.me;
 
@@ -440,7 +443,7 @@ export const createOrder = asyncHandler(async (req, res) => {
       },
     };
   });
-console.log(update.filter,update.update);
+  console.log(update.filter, update.update);
   const updated = await Product.bulkWrite(update, {});
   return res.json({ message: "Order successfull" });
 });
@@ -458,7 +461,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     .populate("orderBy")
     .exec();
 
-  return res.json({allUserorders, message: "All Order Show" });
+  return res.json({ allUserorders, message: "All Order Show" });
 });
 
 /**
@@ -477,7 +480,7 @@ export const getOrder = asyncHandler(async (req, res) => {
     .populate("orderby");
 
   // response
-  return res.json({userOrder, message: "All Order Show" });
+  return res.json({ userOrder, message: "All Order Show" });
 });
 /**
  * @DESC Get order by user id
@@ -488,16 +491,16 @@ export const getOrder = asyncHandler(async (req, res) => {
 
 export const getOrderUserId = asyncHandler(async (req, res) => {
   // login user
-  const  {_id}  = req.params;
+  const { _id } = req.params;
 
   const userOrder = await Order.findOne({ orderby: _id })
     .populate("products.product")
     .populate("orderBy");
-if (!userOrder) {
-  return res.json({ message: "This User not order" });
-}
+  if (!userOrder) {
+    return res.json({ message: "This User not order" });
+  }
   // response
-  return res.json({userOrder, message: "User Order Show" });
+  return res.json({ userOrder, message: "User Order Show" });
 });
 
 /**

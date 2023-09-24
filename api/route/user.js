@@ -28,6 +28,7 @@ const router = express.Router();
 
 // use verify token
 router.use(tokenVerify);
+
 // route
 router.route("/").get(getAllUser).post(createUser);
 // get user wishlist

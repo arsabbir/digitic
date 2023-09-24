@@ -7,12 +7,10 @@ import { getCustomerState } from "../../features/customer/customerSlice.js";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
+import { getproductState } from "../../features/product/productSlice.js";
+import { getAllColor } from "../../features/product/productApiSlice.js";
 
-
-import { getBlogState } from "../../features/blog/BlogSlice.js";
-import { getAllBlogCate } from "../../features/blog/BlogApiSlice.js";
-
-const Customer = () => {
+const ColorList = () => {
   const [search, setSearch] = useState(null);
   // hanlder section
   const handleEditCustomer = () => {};
@@ -25,12 +23,10 @@ const Customer = () => {
   const dispatch = useDispatch();
 
   // selector
-  const { blogCategories, isError, isLoading, message } =
-    useSelector(getBlogState);
-
+  const { colors, isError, isLoading, message } = useSelector(getproductState);
   useEffect(() => {
-    dispatch(getAllBlogCate);
-  }, [dispatch, blogCategories, isError, isLoading, message]);
+    dispatch(getAllColor);
+  }, [dispatch, colors, isError, isLoading, message]);
 
   const cols = [
     {
@@ -80,7 +76,8 @@ const Customer = () => {
         className="shadow-sm wolmart-table"
         title="All Customer Data"
         columns={cols}
-        data={blogCategories}
+        data={colors}
+        theme="solarized"
         selectableRow
         highlightOnHover
         pagination
@@ -102,4 +99,4 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default ColorList;

@@ -10,12 +10,12 @@ import { createSlug } from "../helper/slug.js";
  */
 
 export const getAllBlogCategory = asyncHandler(async (req, res) => {
-  const blogCategorys = await BlogCategory.find();
-
-  if (blogCategorys.length === 0) {
+  console.log("blogCategory");
+  const blogCategories = await BlogCategory.find();
+  if (blogCategories.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  return res.status(200).json(blogCategorys);
+  return res.status(200).json({ blogCategories });
 });
 
 /**
@@ -92,7 +92,7 @@ export const deleteBlogCategory = asyncHandler(async (req, res) => {
  * @access public
  */
 export const updateBlogCategory = asyncHandler(async (req, res) => {
-    console.log("UpdateBC");
+  console.log("UpdateBC");
   const { id } = req.params;
   const { name } = req.body;
 
