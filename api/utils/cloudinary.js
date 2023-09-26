@@ -11,7 +11,7 @@ export const ImageUpload = async (path) => {
   const result = await cloudinary.uploader.upload(path);
   return {
     url: result.secure_url,
-    publicId: result.public_id,
+    public_id: result.public_id,
     asset_id: result.asset_id,
   };
 };
@@ -24,8 +24,8 @@ export const DeleteImage = async (data) => {
 };
 
 export const UpdateImage = async (oldImage, newpath) => {
-  const publicId = oldImage.match(/\/([^/]+)$/)[1].split(".")[0];
-  await cloudinary.uploader.destroy(publicId);
+  const public_id = oldImage.match(/\/([^/]+)$/)[1].split(".")[0];
+  await cloudinary.uploader.destroy(public_id);
   const result = await cloudinary.uploader.upload(newpath);
   //   return
   return result.secure_url;

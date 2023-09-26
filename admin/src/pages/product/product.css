@@ -1,0 +1,7 @@
+/* #img_hov #del_btn {
+  display: none !important;
+}
+
+#img_hov:hover #del_btn {
+  display: inline-block !important;
+} */

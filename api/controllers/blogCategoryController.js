@@ -10,7 +10,7 @@ import { createSlug } from "../helper/slug.js";
  */
 
 export const getAllBlogCategory = asyncHandler(async (req, res) => {
-  console.log("blogCategory");
+  
   const blogCategories = await BlogCategory.find();
   if (blogCategories.length === 0) {
     return res.status(404).json({ message: "User data not found" });

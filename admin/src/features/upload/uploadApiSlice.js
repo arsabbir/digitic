@@ -6,6 +6,7 @@ export const uploadImage = createAsyncThunk(
   "upload/uploadImage",
   async (data) => {
     try {
+     console.log(data);
       const response = await axios.post(`${BaseUrl}upload`, data, {
         withCredentials: true,
       });
@@ -20,7 +21,7 @@ export const deleteImage = createAsyncThunk(
   "image/deleteImage",
   async (data) => {
     try {
-      const response = await axios.post(`${BaseUrl}${data}`,  {
+      const response = await axios.delete(`${BaseUrl}upload/delete-img/${data}`, {
         withCredentials: true,
       });
 

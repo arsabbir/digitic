@@ -44,14 +44,14 @@ export const getSingleProCategory = asyncHandler(async (req, res) => {
  */
 export const createProCategory = asyncHandler(async (req, res) => {
   // get values
-  const { name } = req.body;
+  const { category } = req.body;
 
   // validations
-  if (!name) {
-    return res.status(400).json({ message: "proCategory name is required" });
+  if (!category) {
+    return res.status(400).json({ message: "proCategory  is required" });
   }
   // email check
-  const nameCheck = await ProCategory.findOne({ name });
+  const nameCheck = await ProCategory.findOne({ category });
 
   if (nameCheck) {
     return res.status(400).json({ message: "ProCategory already exists" });
@@ -59,8 +59,8 @@ export const createProCategory = asyncHandler(async (req, res) => {
 
   // create new proCategory
   const proCategory = await ProCategory.create({
-    name,
-    slug: createSlug(name),
+    category,
+    slug: createSlug(category),
   });
 
   res

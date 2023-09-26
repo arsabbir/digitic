@@ -38,7 +38,7 @@ export const createProduct = asyncHandler(async (req, res) => {
   // get values
   const productData = req.body;
   const { name, brand, categories, price, desc, quantity } = productData;
-
+  console.log(req.body);
   // validations
   if (!name || !brand || !categories || !price || !desc || !quantity) {
     return res.status(400).json({ message: "All fields are required" });

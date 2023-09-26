@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createProduct, getAllColor, getAllProCategory } from "./productApiSlice.js";
-
+import {
+  createProduct,
+  getAllBrand,
+  getAllColor,
+  getAllProCategory,
+} from "./productApiSlice.js";
 
 const productSlice = createSlice({
   name: "product",
   initialState: {
     proCategories: [],
+    brands: [],
     products: [],
     colors: [],
     isError: false,
@@ -32,7 +37,6 @@ const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.proCategories = action.payload.proCategories;
-        
       })
       .addCase(getAllColor.pending, (state, action) => {
         state.isLoading = true;
@@ -46,7 +50,6 @@ const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.colors = action.payload.colors;
-        
       })
 
       // create product
@@ -62,7 +65,22 @@ const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.products = action.payload.products;
+      })
+
+      // create product
+      .addCase(getAllBrand.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllBrand.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.error.message;
+      })
+      .addCase(getAllBrand.fulfilled, (state, action) => {
         
+        state.isError = false;
+        state.isSuccess = true;
+        state.brands = action.payload.brands;
       });
   },
 });

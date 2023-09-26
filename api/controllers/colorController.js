@@ -44,26 +44,26 @@ export const getSingleColor = asyncHandler(async (req, res) => {
  */
 export const createColor = asyncHandler(async (req, res) => {
   // get values
-  const { name } = req.body;
+  const { color } = req.body;
 
   // validations
-  if (!name) {
+  if (!color) {
     return res.status(400).json({ message: "color name is required" });
   }
   // email check
-  const nameCheck = await Color.findOne({ name });
+  const nameCheck = await Color.findOne({ color });
 
   if (nameCheck) {
     return res.status(400).json({ message: "Color already exists" });
   }
 
   // create new color
-  const color = await Color.create({
-    name,
-    slug: createSlug(name),
+  const colors = await Color.create({
+    color,
+    slug: createSlug(color),
   });
 
-  res.status(200).json({ color, message: "color created successfully" });
+  res.status(200).json({ colors, message: "color created successfully" });
 });
 
 /**

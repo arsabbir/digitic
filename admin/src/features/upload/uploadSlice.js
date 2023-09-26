@@ -50,7 +50,7 @@ const uploadSlice = createSlice({
 // get logged in user
 
 // export selector
-export const getCustomerState = (state) => state.Upload;
+export const getUploadState = (state) => state.Upload;
 
 // export actions
 // export const {} = authSlice.actions;

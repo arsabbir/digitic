@@ -16,6 +16,8 @@ import User from "../pages/user/User.jsx";
 import ColorList from "../pages/color/ColorList.jsx";
 import AddCategory from "../pages/product/AddCategory.jsx";
 import ProCategory from "../pages/product/ProCategory.jsx";
+import Brand from "../../../api/models/Brand.js";
+import BrandList from "../pages/brand/BrandList.jsx";
 
 // Create private router
 const privateRouter = [
@@ -33,6 +35,10 @@ const privateRouter = [
       {
         path: "/brand",
         element: <AddBrand />,
+      },
+      {
+        path: "/list-brand",
+        element: <BrandList />,
       },
       {
         path: "/enquiries",
