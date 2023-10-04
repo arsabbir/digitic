@@ -5,48 +5,62 @@ import { useDispatch, useSelector } from "react-redux";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
-import { getproductState } from "../../features/product/productSlice.js";
-import { Link } from "react-router-dom";
-// import { sweetDelete } from "../../utils/SweetAlert.js";
+import { Link, useLocation } from "react-router-dom";
 import { deleteBrand } from "../../features/product/productApiSlice.js";
 import { sweetDelete } from "../../utils/SweetAlert.js";
+import { getOrderState } from "../../features/order/orderSlice.js";
+import { getSingUserOrder } from "../../features/order/orderApiSlice.js";
 
-const BrandList = () => {
+// import sectin end
+
+const ViewOrder = () => {
   const [search, setSearch] = useState(null);
-
-
+  const location = useLocation();
+  const userId = location.pathname.split("/")[2];
   const handleSearch = () => {};
 
   // useState section
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getSingUserOrder(userId));
+  }, []);
 
   // selector
-  const { brands, isError, isLoading, message } = useSelector(getproductState);
-  useEffect(() => {}, [dispatch, brands, isError, isLoading, message]);
+  const { singleUserOrder, isError, isLoading, message } =
+  useSelector(getOrderState);
+  useEffect(() => {}, [dispatch, singleUserOrder, isError, isLoading, message]);
+  console.log(singleUserOrder);
+
+
+
+
   const cols = [
     {
       name: "SNo",
       selector: (row, index) => index + 1,
     },
     {
-      name: "Name",
-      selector: (row) => row.name,
+      name: "Product Name",
+      selector: (row) => row.product.name,
+    },
+    {
+      name: "Brand",
+      selector: (row) => row.product.brand,
+    },
+    {
+      name: "Count",
+      selector: (row) => row.count,
+    },
+    {
+      name: "Color",
+      selector: (row) => row.product.color,
     },
 
     {
       name: "Created At",
-      selector: (row) => timeAgo(row.createdAt),
+      selector: (row) => timeAgo(row.date),
     },
-    {
-      name: "Status",
-      selector: (row) => (
-        <>
-          <div className="status-toggle">
-            <Switch checked={row?.status ? true : false} />
-          </div>
-        </>
-      ),
-    },
+    
     {
       name: "Action",
       selector: (row) => (
@@ -71,12 +85,11 @@ const BrandList = () => {
 
   return (
     <>
-      {" "}
       <DataTable
-        className="shadow-sm wolmart-table"
+        className="shadow-sm digitic-table"
         title="All Customer Data"
         columns={cols}
-        data={brands}
+        data={singleUserOrder?.products}
         theme="solarized"
         selectableRow
         highlightOnHover
@@ -99,4 +112,4 @@ const BrandList = () => {
   );
 };
 
-export default BrandList;
+export default ViewOrder;

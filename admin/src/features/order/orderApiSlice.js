@@ -3,16 +3,17 @@ import { BaseUrl } from "../../utils/BaseUrl.js";
 import axios from "axios";
 
 // reset all staste
-export const resetStaste = createAction("Reset_all");
-// get all Enquiry
-export const getAllEnquiry = createAsyncThunk(
-  "enquiry/getAllEnquiry",
+export const resetState = createAction("Reset_all");
+// get all Order
+export const getAllOrder = createAsyncThunk(
+  "order/getAllOrder",
   async () => {
     try {
-      const response = await axios.get(`${BaseUrl}enquiry`, {
+      console.log("all_orders");
+      const response = await axios.get(`${BaseUrl}user/allorders`, {
         withCredentials: true,
       });
-
+console.log(response.data);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data.message);
@@ -20,27 +21,16 @@ export const getAllEnquiry = createAsyncThunk(
   }
 );
 
-// create brand
-export const createEnquiry = createAsyncThunk(
-  "enquiry/createEnquiry",
-  async (data) => {
-    try {
-      const response = await axios.post(`${BaseUrl}enquiry`, data, {
-        withCredentials: true,
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response.data.message);
-    }
-  }
-);
 
-// get single enquiry
-export const getSingleEnquiry = createAsyncThunk(
-  "enquiry/getSingleEnquiry",
+
+// get single order
+export const getSingUserOrder = createAsyncThunk(
+  "order/getSingUserOrder",
   async (data) => {
     try {
-      const response = await axios.get(`${BaseUrl}enquiry/${data}`, {
+
+
+      const response = await axios.get(`${BaseUrl}user/orderuserid/${data}`, {
         withCredentials: true,
       });
       return response.data;
@@ -50,12 +40,12 @@ export const getSingleEnquiry = createAsyncThunk(
   }
 );
 // update brand
-export const updateEnquiry = createAsyncThunk(
-  "enquiry/updateEnquiry",
+export const updateOrder = createAsyncThunk(
+  "order/updateOrder",
   async ({ id, enqData }) => {
     try {
       const response = await axios.put(
-        `${BaseUrl}enquiry/${id}`,
+        `${BaseUrl}order/${id}`,
         { status: enqData },
         {
           withCredentials: true,
@@ -68,12 +58,12 @@ export const updateEnquiry = createAsyncThunk(
   }
 );
 // update brand
-export const deleteEnquiry = createAsyncThunk(
-  "enquiry/deleteEnquiry",
+export const deleteOrder = createAsyncThunk(
+  "order/deleteOrder",
   async (data) => {
     console.log(data);
     try {
-      const response = await axios.delete(`${BaseUrl}enquiry/${data}`, {
+      const response = await axios.delete(`${BaseUrl}order/${data}`, {
         withCredentials: true,
       });
       return response.data;

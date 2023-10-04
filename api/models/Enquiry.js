@@ -1,6 +1,6 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 
-// create schema
+// Create schema
 const enquirySchema = mongoose.Schema(
   {
     name: {
@@ -15,10 +15,18 @@ const enquirySchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    comment: { type: String, required: true },
+    comment: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      default: "Submitted",
+      enum: ["Submitted", "Contacted", "In Progress", "Resolved"],
+    },
   },
   { timestamps: true }
 );
 
-// export
+// Export model
 export default mongoose.model("Enquiry", enquirySchema);

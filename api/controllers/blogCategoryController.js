@@ -10,7 +10,6 @@ import { createSlug } from "../helper/slug.js";
  */
 
 export const getAllBlogCategory = asyncHandler(async (req, res) => {
-  
   const blogCategories = await BlogCategory.find();
   if (blogCategories.length === 0) {
     return res.status(404).json({ message: "User data not found" });
@@ -33,7 +32,7 @@ export const getSingleBlogCategory = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "BlogCategory data not found" });
   }
 
-  res.status(200).json(blogCategory);
+  res.status(200).json({ blogCategory });
 });
 
 /**
@@ -82,7 +81,7 @@ export const deleteBlogCategory = asyncHandler(async (req, res) => {
   }
   const blogCategoryDelete = await BlogCategory.findByIdAndDelete(id);
 
-  res.status(200).json({ message: "blogCategory deleted" });
+  res.status(200).json({ blogCategoryDelete, message: "blogCategory deleted" });
 });
 
 /**

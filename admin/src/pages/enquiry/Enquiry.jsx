@@ -2,30 +2,53 @@ import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCustomer } from "../../features/customer/customerApiSlice.js";
-import { getCustomerState } from "../../features/customer/customerSlice.js";
-import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
-import { Switch } from "antd";
+import swal from "sweetalert";
+import { AiFillDelete, AiFillEye } from "react-icons/ai";
+
 import { timeAgo } from "../../helper/timeAgo.js";
-import { getAllEnquiry } from "../../features/enquiry/EnquiryApiSlice.jsx";
+import {
+  deleteEnquiry,
+  updateEnquiry,
+} from "../../features/enquiry/EnquiryApiSlice.jsx";
 import { getEnquiryState } from "../../features/enquiry/EnquirySlice.jsx";
+import { Link } from "react-router-dom";
 
 const Enquiry = () => {
   const [search, setSearch] = useState(null);
-  // hanlder section
-  const handleEditCustomer = () => {};
 
-  const customerHandleDelete = () => {};
+  // hanlder section
+  const handleViewEnquiry = () => {};
+  const enquiryHandleDelete = (id) => {
+    swal({
+      title: "Sure",
+      text: "Are you sure you want to delete",
+      icon: "error",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(deleteEnquiry(id));
+      } else {
+        swal("Your imaginary file is safe!");
+      }
+    });
+  };
 
   const handleSearch = () => {};
 
+  const setEnquiryStatus = (e, i) => {
+    const data = { id: i, enqData: e };
+    dispatch(updateEnquiry(data));
+  };
   // useState section
   const dispatch = useDispatch();
 
   // selector
   const { enquiries, isError, isLoading, message } =
     useSelector(getEnquiryState);
+  // handler section
 
+  // useEffect
   useEffect(() => {}, [dispatch, enquiries, isError, isLoading, message]);
 
   const cols = [
@@ -46,9 +69,16 @@ const Enquiry = () => {
       name: "Status",
       selector: (row) => (
         <>
-          <div className="status-toggle">
-            <Switch checked={row?.status ? true : false} />
-          </div>
+          <select
+            className="form-control form-select"
+            value={row?.status ? row.status : "Submitted"}
+            onChange={(e) => setEnquiryStatus(e.target.value, row._id)}
+          >
+            <option value="Submitted">Submitted</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+          </select>
         </>
       ),
     },
@@ -56,15 +86,16 @@ const Enquiry = () => {
       name: "Action",
       selector: (row) => (
         <>
-          <button
+          <Link
+            to={`/enquiries/${row._id}`}
             style={{ marginRight: "3px" }}
             className="btn btn-warning mr-2 btn-sm"
-            onClick={() => handleEditCustomer(row._id)}
+            onClick={() => handleViewEnquiry(row._id)}
           >
-            <AiTwotoneEdit />
-          </button>
+            <AiFillEye />
+          </Link>
           <button
-            onClick={() => customerHandleDelete(row._id)}
+            onClick={() => enquiryHandleDelete(row._id)}
             className="btn btn-danger  btn-sm"
           >
             <AiFillDelete className="" />
@@ -78,7 +109,7 @@ const Enquiry = () => {
       {" "}
       <DataTable
         className="shadow-sm wolmart-table"
-        title="All Customer Data"
+        title="All Enquiry Data"
         columns={cols}
         data={enquiries}
         selectableRow

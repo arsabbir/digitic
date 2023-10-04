@@ -33,7 +33,7 @@ export const getSingleProCategory = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "ProCategory data not found" });
   }
 
-  res.status(200).json(proCategory);
+  res.status(200).json({ proCategory });
 });
 
 /**
@@ -44,14 +44,14 @@ export const getSingleProCategory = asyncHandler(async (req, res) => {
  */
 export const createProCategory = asyncHandler(async (req, res) => {
   // get values
-  const { category } = req.body;
+  const { name } = req.body;
 
   // validations
-  if (!category) {
-    return res.status(400).json({ message: "proCategory  is required" });
+  if (!name) {
+    return res.status(400).json({ message: "proCategory name is required" });
   }
   // email check
-  const nameCheck = await ProCategory.findOne({ category });
+  const nameCheck = await ProCategory.findOne({ name });
 
   if (nameCheck) {
     return res.status(400).json({ message: "ProCategory already exists" });
@@ -59,8 +59,8 @@ export const createProCategory = asyncHandler(async (req, res) => {
 
   // create new proCategory
   const proCategory = await ProCategory.create({
-    category,
-    slug: createSlug(category),
+    name,
+    slug: createSlug(name),
   });
 
   res
@@ -81,8 +81,8 @@ export const deleteProCategory = asyncHandler(async (req, res) => {
     return res.status(200).json({ message: "proCategory not found" });
   }
   const proCategoryDelete = await ProCategory.findByIdAndDelete(id);
-
-  res.status(200).json({ message: "proCategory deleted" });
+  // response
+  res.status(200).json({ proCategoryDelete, message: "proCategory deleted" });
 });
 
 /**
@@ -113,7 +113,7 @@ export const updateProCategory = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    console.log(UpProCate, "update");
+
     return res
       .status(200)
       .json({ UpProCate, message: "ProCategory data updated successfully" });

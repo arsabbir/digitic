@@ -2,14 +2,14 @@ import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { BaseUrl } from "../../utils/BaseUrl.js";
 import axios from "axios";
 
-// reset all staste
-export const resetStaste = createAction("Reset_all");
-// get all Enquiry
-export const getAllEnquiry = createAsyncThunk(
-  "enquiry/getAllEnquiry",
+
+export const resetState = createAction("Reset_all");
+// get all Coupon
+export const getAllCoupon = createAsyncThunk(
+  "coupon/getAllCoupon",
   async () => {
     try {
-      const response = await axios.get(`${BaseUrl}enquiry`, {
+      const response = await axios.get(`${BaseUrl}coupon`, {
         withCredentials: true,
       });
 
@@ -21,11 +21,12 @@ export const getAllEnquiry = createAsyncThunk(
 );
 
 // create brand
-export const createEnquiry = createAsyncThunk(
-  "enquiry/createEnquiry",
+export const createCoupon = createAsyncThunk(
+  "coupon/createCoupon",
   async (data) => {
+    console.log("data");
     try {
-      const response = await axios.post(`${BaseUrl}enquiry`, data, {
+      const response = await axios.post(`${BaseUrl}coupon`, data, {
         withCredentials: true,
       });
       return response.data;
@@ -35,12 +36,12 @@ export const createEnquiry = createAsyncThunk(
   }
 );
 
-// get single enquiry
-export const getSingleEnquiry = createAsyncThunk(
-  "enquiry/getSingleEnquiry",
+// get single coupon
+export const getSingleCoupon = createAsyncThunk(
+  "coupon/getSingleCoupon",
   async (data) => {
     try {
-      const response = await axios.get(`${BaseUrl}enquiry/${data}`, {
+      const response = await axios.get(`${BaseUrl}coupon/${data}`, {
         withCredentials: true,
       });
       return response.data;
@@ -50,17 +51,13 @@ export const getSingleEnquiry = createAsyncThunk(
   }
 );
 // update brand
-export const updateEnquiry = createAsyncThunk(
-  "enquiry/updateEnquiry",
-  async ({ id, enqData }) => {
+export const updateCoupon = createAsyncThunk(
+  "coupon/updateCoupon",
+  async ({ id, coupondata }) => {
     try {
-      const response = await axios.put(
-        `${BaseUrl}enquiry/${id}`,
-        { status: enqData },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.put(`${BaseUrl}coupon/${id}`, coupondata, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response.data.message);
@@ -68,12 +65,11 @@ export const updateEnquiry = createAsyncThunk(
   }
 );
 // update brand
-export const deleteEnquiry = createAsyncThunk(
-  "enquiry/deleteEnquiry",
+export const deleteCoupon = createAsyncThunk(
+  "coupon/deleteCoupon",
   async (data) => {
-    console.log(data);
     try {
-      const response = await axios.delete(`${BaseUrl}enquiry/${data}`, {
+      const response = await axios.delete(`${BaseUrl}coupon/${data}`, {
         withCredentials: true,
       });
       return response.data;

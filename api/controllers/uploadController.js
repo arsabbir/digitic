@@ -1,7 +1,7 @@
 // import section
 import asyncHandler from "express-async-handler";
 import { DeleteImage, ImageUpload } from "../utils/cloudinary.js";
-import Product from "../models/Product.js";
+
 
 /**
  * @DESC Photo Upload
@@ -21,7 +21,6 @@ export const uploadPhoto = asyncHandler(async (req, res) => {
       photos.push(uploadedImage);
     }
   }
-
   return res.status(200).json({ photos, message: "Photo Upload Success" });
 });
 

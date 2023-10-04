@@ -2,37 +2,34 @@ import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCustomer } from "../../features/customer/customerApiSlice.js";
-import { getCustomerState } from "../../features/customer/customerSlice.js";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
-
-
+import { Link } from "react-router-dom";
 import { getBlogState } from "../../features/blog/BlogSlice.js";
-import { getAllBlogCate } from "../../features/blog/BlogApiSlice.js";
-
+import { deleteBlogCate, getAllBlogCate } from "../../features/blog/BlogApiSlice.js";
+import { sweetDelete } from "../../utils/SweetAlert.js";
 const Customer = () => {
   const [search, setSearch] = useState(null);
   // hanlder section
-  const handleEditCustomer = () => {};
-
-  const customerHandleDelete = () => {};
-
   const handleSearch = () => {};
 
   // useState section
   const dispatch = useDispatch();
 
   // selector
-  const { blogCategories, isError, isLoading, message } =
+  const { blogCategories, singleBlogCate, isError, isLoading, message } =
     useSelector(getBlogState);
 
   useEffect(() => {
     dispatch(getAllBlogCate);
-  }, [dispatch, blogCategories, isError, isLoading, message]);
+  }, [dispatch, blogCategories, singleBlogCate, isError, isLoading, message]);
 
   const cols = [
+    {
+      name: "SNo.",
+      selector: (row, index) => index - 1,
+    },
     {
       name: "Name",
       selector: (row) => row.name,
@@ -56,15 +53,15 @@ const Customer = () => {
       name: "Action",
       selector: (row) => (
         <>
-          <button
+          <Link
+            to={`/blog-category/${row._id}`}
             style={{ marginRight: "3px" }}
             className="btn btn-warning mr-2 btn-sm"
-            onClick={() => handleEditCustomer(row._id)}
           >
             <AiTwotoneEdit />
-          </button>
+          </Link>
           <button
-            onClick={() => customerHandleDelete(row._id)}
+            onClick={() => sweetDelete(dispatch(deleteBlogCate(`${row._id}`)))}
             className="btn btn-danger  btn-sm"
           >
             <AiFillDelete className="" />
@@ -77,8 +74,8 @@ const Customer = () => {
     <div>
       {" "}
       <DataTable
-        className="shadow-sm wolmart-table"
-        title="All Customer Data"
+        className="shadow-sm digitic-table"
+        title="All Blog Category Data"
         columns={cols}
         data={blogCategories}
         selectableRow

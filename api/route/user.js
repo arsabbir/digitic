@@ -6,9 +6,9 @@ import {
   createOrder,
   createUser,
   deleteUser,
-  getAllCart,
   getAllOrders,
   getAllUser,
+  getCartAllProduct,
   getOrder,
   getOrderUserId,
   getSingleUser,
@@ -36,7 +36,7 @@ router.route("/wishlist").get(getWishllist);
 // save address
 router.route("/save-address").put(saveAddress).patch(saveAddress);
 // add Cart and Delete Cart and Show All Cart
-router.route("/cart").post(addCartUser).delete(removeCartUser).get(getAllCart);
+router.route("/cart").post(addCartUser).delete(removeCartUser).get(getCartAllProduct);
 // apply coupon
 router.route("/applycoupon").post(applyCoupon);
 // order create
@@ -46,7 +46,7 @@ router.route("/allorders").get(isAdmin, getAllOrders);
 // get single user order
 router.route("/getorder").get(getOrder);
 // get order by user id only seen admin
-router.route("/getorderuserid/:id").get(isAdmin, getOrderUserId);
+router.route("/orderuserid/:id").get(isAdmin, getOrderUserId);
 // update order status
 router.route("/order/update-order/:id").put(isAdmin, updateOrderStatus);
 

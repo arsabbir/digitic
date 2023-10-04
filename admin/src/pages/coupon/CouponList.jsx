@@ -2,18 +2,34 @@ import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
-import { getproductState } from "../../features/product/productSlice.js";
+import { getCouponState } from "../../features/coupon/couponSlice.js";
 import { Link } from "react-router-dom";
-// import { sweetDelete } from "../../utils/SweetAlert.js";
-import { deleteBrand } from "../../features/product/productApiSlice.js";
 import { sweetDelete } from "../../utils/SweetAlert.js";
+import { deleteCoupon } from "../../features/coupon/couponApiSlice.js";
 
-const BrandList = () => {
+const CouponList = () => {
   const [search, setSearch] = useState(null);
+  // hanlder section
 
+  const customerHandleDelete = (id) => {
+    swal({
+      title: "Sure",
+      text: "Are you sure you want to delete",
+      icon: "error",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        dispatch(deleteCoupon(id));
+      } else {
+        swal("Your imaginary file is safe!");
+      }
+    });    
+  };
 
   const handleSearch = () => {};
 
@@ -21,16 +37,18 @@ const BrandList = () => {
   const dispatch = useDispatch();
 
   // selector
-  const { brands, isError, isLoading, message } = useSelector(getproductState);
-  useEffect(() => {}, [dispatch, brands, isError, isLoading, message]);
+  const { coupons, isError, isLoading, message } = useSelector(getCouponState);
+
+  useEffect(() => {}, [dispatch, coupons, isError, isLoading, message]);
+
   const cols = [
-    {
-      name: "SNo",
-      selector: (row, index) => index + 1,
-    },
     {
       name: "Name",
       selector: (row) => row.name,
+    },
+    {
+      name: "Discount",
+      selector: (row) => row.discount,
     },
 
     {
@@ -52,14 +70,14 @@ const BrandList = () => {
       selector: (row) => (
         <>
           <Link
-            to={`/brand/${row._id}`}
+            to={`/coupon/${row._id}`}
             style={{ marginRight: "3px" }}
             className="btn btn-warning mr-2 btn-sm"
           >
             <AiTwotoneEdit />
           </Link>
           <button
-            onClick={() => sweetDelete(dispatch(deleteBrand(`${row._id}`)))}
+            onClick={() => customerHandleDelete(`${row._id}`)}
             className="btn btn-danger  btn-sm"
           >
             <AiFillDelete className="" />
@@ -68,15 +86,14 @@ const BrandList = () => {
       ),
     },
   ];
-
   return (
-    <>
+    <div>
       {" "}
       <DataTable
         className="shadow-sm wolmart-table"
         title="All Customer Data"
         columns={cols}
-        data={brands}
+        data={coupons}
         theme="solarized"
         selectableRow
         highlightOnHover
@@ -95,8 +112,8 @@ const BrandList = () => {
           />
         }
       />
-    </>
+    </div>
   );
 };
 
-export default BrandList;
+export default CouponList;

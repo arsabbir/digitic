@@ -18,7 +18,7 @@ import {
   resetState,
 } from "../../features/product/productApiSlice.js";
 
-import { Select } from "antd";
+import { Select, message } from "antd";
 import { uploadImage } from "../../features/upload/uploadApiSlice.js";
 let schema = object().shape({
   name: string().required("title is Required"),
@@ -154,7 +154,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (isError) {
-      toast.error("Something Went Wrong!");
+      toast.error(message);
     }
   }, [isError, isLoading, isSuccess]);
 
@@ -256,6 +256,9 @@ const AddProduct = () => {
                 );
               })}
             </select>
+            <div className="error">
+              {formik.touched.categories && formik.errors.categories}
+            </div>
           </div>
           {/* tags */}
           <div className="my-3">
@@ -274,8 +277,11 @@ const AddProduct = () => {
               <option value="popular">Popular</option>
               <option value="special">Special</option>
             </select>
+            <div className="error">
+              {formik.touched.tags && formik.errors.tags}
+            </div>
           </div>
-          {/* color */}
+          {/* color */} 
           <div className="color">
             <Select
               mode="multiple"

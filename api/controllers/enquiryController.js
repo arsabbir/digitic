@@ -16,7 +16,7 @@ export const getAllEnquiry = asyncHandler(async (req, res) => {
   if (enquiries.length === 0) {
     return res.status(404).json({ message: "Enquiry  data not found" });
   }
-  return res.status(200).json({enquiries});
+  return res.status(200).json({ enquiries });
 });
 
 /**
@@ -34,7 +34,7 @@ export const getSingleEnquiry = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Enquiry data not found" });
   }
 
-  res.status(200).json(enquiry);
+  res.status(200).json({enquiry});
 });
 
 /**
@@ -72,7 +72,7 @@ export const deleteEnquiry = asyncHandler(async (req, res) => {
   }
   const enquiryDelete = await Enquiry.findByIdAndDelete(id);
 
-  res.status(200).json({ message: "enquiry deleted" });
+  res.status(200).json({ enquiryDelete, message: "enquiry deleted" });
 });
 
 /**
@@ -82,6 +82,7 @@ export const deleteEnquiry = asyncHandler(async (req, res) => {
  * @access public
  */
 export const updateEnquiry = asyncHandler(async (req, res) => {
+  console.log(req.body);
   const { id } = req.params;
   //   const { name } = req.body;
 
@@ -104,4 +105,33 @@ export const updateEnquiry = asyncHandler(async (req, res) => {
       .status(200)
       .json({ upEnquiry, message: "Enquiry data updated successfully" });
   }
+});
+
+/**
+ * @DESC Update Enquiry status
+ * @ROUTE /api/v1/enquiry/:id
+ * @method PUT/PATCH
+ * @access public
+ */
+
+// Controller for updating the status of an enquiry
+export const updateEnquiryStatus = asyncHandler(async (req, res) => {
+  // Find the enquiry by ID
+  const enquiry = await Enquiry.findById(req.params.id);
+
+  const status = req.body;
+
+  if (!enquiry) {
+    return res.status(404).json({ message: "Enquiry not found" });
+  }
+
+  // Update the status
+  enquiry.status = req.body.status;
+
+  // Save the updated enquiry
+  await enquiry.save();
+  console.log(enquiry);
+  return res
+    .status(200)
+    .json({ enquiry, message: "Enquiry status updated successfully" });
 });

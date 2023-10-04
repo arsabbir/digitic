@@ -1,8 +1,8 @@
 import "./App.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./router/router.jsx";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getLoggedInUser } from "./features/auth/authApiSlice.js";
@@ -15,6 +15,8 @@ import {
   getAllProCategory,
 } from "./features/product/productApiSlice.js";
 import { uploadImage } from "./features/upload/uploadApiSlice.js";
+import { getAllCoupon } from "./features/coupon/couponApiSlice.js";
+import { getAllOrder } from "./features/order/orderApiSlice.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +31,8 @@ function App() {
       dispatch(getAllColor());
       dispatch(uploadImage());
       dispatch(getAllBrand());
+      dispatch(getAllCoupon());
+      dispatch(getAllOrder());
     }
   }, [dispatch]);
 

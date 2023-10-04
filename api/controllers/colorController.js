@@ -15,7 +15,7 @@ export const getAllColor = asyncHandler(async (req, res) => {
   if (colors.length === 0) {
     return res.status(404).json({ message: "User data not found" });
   }
-  return res.status(200).json({colors});
+  return res.status(200).json({ colors });
 });
 
 /**
@@ -33,7 +33,7 @@ export const getSingleColor = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Color data not found" });
   }
 
-  res.status(200).json(color);
+  res.status(200).json({ color });
 });
 
 /**
@@ -44,26 +44,26 @@ export const getSingleColor = asyncHandler(async (req, res) => {
  */
 export const createColor = asyncHandler(async (req, res) => {
   // get values
-  const { color } = req.body;
+  const { name } = req.body;
 
   // validations
-  if (!color) {
+  if (!name) {
     return res.status(400).json({ message: "color name is required" });
   }
   // email check
-  const nameCheck = await Color.findOne({ color });
+  const nameCheck = await Color.findOne({ name });
 
   if (nameCheck) {
     return res.status(400).json({ message: "Color already exists" });
   }
 
   // create new color
-  const colors = await Color.create({
-    color,
-    slug: createSlug(color),
+  const color = await Color.create({
+    name,
+    slug: createSlug(name),
   });
 
-  res.status(200).json({ colors, message: "color created successfully" });
+  res.status(200).json({ color, message: "color created successfully" });
 });
 
 /**
@@ -80,7 +80,7 @@ export const deleteColor = asyncHandler(async (req, res) => {
   }
   const colorDelete = await Color.findByIdAndDelete(id);
 
-  res.status(200).json({ message: "color deleted" });
+  res.status(200).json({colorDelete, message: "color deleted" });
 });
 
 /**

@@ -9,12 +9,12 @@ import Coupon from "../models/Coupon.js";
  * @access public
  */
 export const getAllCoupon = asyncHandler(async (req, res) => {
-  const coupon = await Coupon.find();
-  if (!coupon) {
+  const coupons = await Coupon.find();
+  if (!coupons) {
     return res.status(404).json({ message: "coupon data not found" });
   }
 
-  return res.status(200).json(coupon);
+  return res.status(200).json({ coupons });
 });
 /**
  * @DESC Get Single coupon data
@@ -31,7 +31,7 @@ export const getSingleCoupon = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "coupon data not found" });
   }
 
-  res.status(200).json(coupon);
+  res.status(200).json({ coupon });
 });
 
 /**
@@ -43,7 +43,7 @@ export const getSingleCoupon = asyncHandler(async (req, res) => {
 export const createCoupon = asyncHandler(async (req, res) => {
   // get values
   const { name, expire, discount } = req.body;
-
+  console.log(req.body);
   // validations
   if (!name || !expire || !discount) {
     return res.status(400).json({ message: "All fields are required" });
@@ -69,7 +69,7 @@ export const createCoupon = asyncHandler(async (req, res) => {
  */
 export const updateCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  
+
   const coupon = await Coupon.findById(id);
 
   if (!coupon) {

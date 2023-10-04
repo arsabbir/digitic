@@ -42,5 +42,7 @@
   font-family: Roboto !important;
   color: var(--color-828599);
 }
-
+ .rdt_Table .rdt_TableHead{
+  font-size: 14px;
+}
 

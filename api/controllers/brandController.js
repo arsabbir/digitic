@@ -15,7 +15,7 @@ export const getAllBrand = asyncHandler(async (req, res) => {
   if (brands.length === 0) {
     return res.status(404).json({ message: "Brand not found" });
   }
-  return res.status(200).json({brands});
+  return res.status(200).json({ brands });
 });
 
 /**
@@ -26,14 +26,13 @@ export const getAllBrand = asyncHandler(async (req, res) => {
  */
 export const getSingleBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   const brand = await Brand.findById(id);
 
   if (!brand) {
     return res.status(404).json({ message: "Brand data not found" });
   }
 
-  res.status(200).json(brand);
+  res.status(200).json({ brand });
 });
 
 /**
@@ -44,26 +43,26 @@ export const getSingleBrand = asyncHandler(async (req, res) => {
  */
 export const createBrand = asyncHandler(async (req, res) => {
   // get values
-  const { brand } = req.body;
+  const { name } = req.body;
 
   // validations
-  if (!brand) {
+  if (!name) {
     return res.status(400).json({ message: "brand name is required" });
   }
   // email check
-  const nameCheck = await Brand.findOne({ brand });
+  const nameCheck = await Brand.findOne({ name });
 
   if (nameCheck) {
     return res.status(400).json({ message: "Brand already exists" });
   }
 
   // create new brand
-  const brands = await Brand.create({
-    brand,
-    slug: createSlug(brand),
+  const brand = await Brand.create({
+    name,
+    slug: createSlug(name),
   });
 
-  res.status(200).json({ brands, message: "brand created successfully" });
+  res.status(200).json({ brand, message: "brand created successfully" });
 });
 
 /**
@@ -80,7 +79,7 @@ export const deleteBrand = asyncHandler(async (req, res) => {
   }
   const brandDelete = await Brand.findByIdAndDelete(id);
 
-  res.status(200).json({ message: "brand deleted" });
+  res.status(200).json({brandDelete, message: "brand deleted" });
 });
 
 /**

@@ -15,7 +15,6 @@ import Order from "../models/Order.js";
  */
 
 export const getAllUser = asyncHandler(async (req, res) => {
-
   const users = await User.find().populate("wishlist");
   if (users.length === 0) {
     return res
@@ -267,43 +266,97 @@ export const addCartUser = asyncHandler(async (req, res) => {
   let products = [];
   const user = await User.findById(loginUser._id);
 
-  // check if user already have product in cart
+  // --------------------------------
+
+  const cartPID = cart[0]._id;
+
+  // Check if user already has a cart
   const alreadyExistCart = await Cart.findOne({ orderby: user._id });
-  console.log(alreadyExistCart);
-  // if already Exist Cart true
+
   if (alreadyExistCart) {
-    // Use deleteOne to remove the document
-    const removeCart = await Cart.findByIdAndDelete(alreadyExistCart._id);
-    return res.status(200).json({ message: "Cart Remove" });
+    // Check if the product already exists in the cart
+    const existingProduct = alreadyExistCart.products.find(
+      (product) => product.product.toString() === cartPID.toString()
+    );
+
+    if (existingProduct) {
+      const accurateProduct = await Product.findById(existingProduct.product);
+      const proPrice = accurateProduct.price;
+      const upCount = existingProduct.count + cart[0].count;
+      const count = Number(upCount);
+      const upCartTotal = upCount * proPrice;
+
+      // If the product exists, update count and cartTotal
+      const updatedCart = await Cart.findOneAndUpdate(
+        {
+          _id: alreadyExistCart._id,
+          "products.product": cartPID,
+        },
+        {
+          "products.$.count": upCount,
+          cartTotal: upCartTotal,
+        },
+        { new: true }
+      );
+      return res
+        .status(200)
+        .json({ updatedCart, message: "Cart update successfully" });
+    } else {
+      // add product find
+      const addCartPro = await Product.findById(cartPID);
+      const cartProPrice = addCartPro.price;
+      const count = cart[0].count;
+
+      console.log(count * cartProPrice);
+      // If the product doesn't exist, add it to the cart
+      const updatedCart = await Cart.findByIdAndUpdate(
+        alreadyExistCart._id,
+        {
+          $push: {
+            products: {
+              product: cartPID,
+              count: cart[0].count,
+              cartTotal: count * cartProPrice,
+            },
+          }, // Add the product with quantity 1
+        },
+        { new: true } // This option returns the updated cart document
+      );
+      return res
+        .status(200)
+        .json({ updatedCart, message: "Cart update successfully" });
+    }
+  } else {
+    // already exist false
+    let object = {};
+    for (let i = 0; i < cart.length; i++) {
+      object.product = cart[i]._id;
+      object.color = cart[i].color;
+      object.count = cart[i].count;
+      // price
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+      object.price = getPrice.price;
+      products.push(object);
+    }
+
+    //cart total
+    let cartTotal = 0;
+    for (let i = 0; i < products.length; i++) {
+      cartTotal += products[i].price * products[i].count;
+    }
+
+    // and new cart
+    const newCart = await Cart.create({
+      products,
+      cartTotal,
+      orderby: user._id,
+    });
+
+    //response
+    return res.status(200).json({ newCart, message: "Cart Add successfully" });
   }
 
-  // already exist false
-  let object = {};
-  for (let i = 0; i < cart.length; i++) {
-    object.product = cart[i]._id;
-    object.color = cart[i].color;
-    object.count = cart[i].count;
-    // price
-    let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-    object.price = getPrice.price;
-    products.push(object);
-  }
-  console.log("Add");
-  //cart total
-  let cartTotal = 0;
-  for (let i = 0; i < products.length; i++) {
-    cartTotal += products[i].price * products[i].count;
-  }
-
-  // and new cart
-  const newCart = await Cart.create({
-    products,
-    cartTotal,
-    orderby: user._id,
-  });
-
-  //response
-  return res.status(200).json({ newCart, message: "Cart Add successfully" });
+  // -------------------------
 });
 
 /**
@@ -322,20 +375,21 @@ export const removeCartUser = asyncHandler(async (req, res) => {
   return res.status(200).json({ cart, message: "Remove Cart" });
 });
 /**
- * @DESC get user cart
+ * @DESC All cart shows of a user
  * @ROUTE api/v1/user/cart
  * @METHOD Post
  * @ACCESS public
  */
 
-export const getAllCart = asyncHandler(async (req, res) => {
+export const getCartAllProduct = asyncHandler(async (req, res) => {
   // get login user value
   const loginUser = req.me;
 
   // login user data from database
-  const cart = await Cart.findOne({ orderby: loginUser._id }).pupulate(
-    "product"
+  const cart = await Cart.findOne({ orderby: loginUser._id }).populate(
+    "products.product"
   );
+
   return res.status(200).json({ cart, message: "All cart shows of a user" });
 });
 
@@ -359,7 +413,7 @@ export const applyCoupon = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Invalid coupon" });
   }
   const cartCheck = await Cart.findOne({ orderby: user._id });
-  console.log(cartCheck);
+
   // if cart is empty
   if (cartCheck == null) {
     return res.status(400).json({ message: "Cart is empty" });
@@ -395,12 +449,7 @@ export const createOrder = asyncHandler(async (req, res) => {
   // get value
   const { COD, couponApplied } = req.body;
   const loginUser = req.me;
-  // validation
-  // if (!COD || !couponApplied) {
-  //   return res
-  //   .status(200)
-  //   .json({ message: "All field are required" });
-  // }
+
   if (!COD) {
     return res.status(200).json({ message: "Create cash order failed" });
   }
@@ -428,7 +477,7 @@ export const createOrder = asyncHandler(async (req, res) => {
       id: uniqid(),
       method: "COD",
       amouunt: finalAmount,
-      created: Date.now,
+      created: Date.now(),
       currency: "usd",
     },
     orderBy: user._id,
@@ -436,15 +485,30 @@ export const createOrder = asyncHandler(async (req, res) => {
   });
 
   let update = userCart.products.map((item) => {
+    // Check if item.count is a valid number
+    const count = Number(item.count);
+
+    if (isNaN(count)) {
+      // Handle the case where item.count is not a valid number
+      console.error(
+        `Invalid count value for item with _id ${item.product._id}`
+      );
+      return null; // Skip this update operation
+    }
+
     return {
       updateOne: {
         filter: { _id: item.product._id },
-        update: { $inc: { quantity: -item.count, sold: +item.count } },
+        update: { $inc: { quantity: -count, sold: count } },
       },
     };
   });
-  console.log(update.filter, update.update);
+
+  // Filter out null values (invalid count values)
+  update = update.filter((updateOp) => updateOp !== null);
+
   const updated = await Product.bulkWrite(update, {});
+
   return res.json({ message: "Order successfull" });
 });
 
@@ -456,6 +520,7 @@ export const createOrder = asyncHandler(async (req, res) => {
  */
 
 export const getAllOrders = asyncHandler(async (req, res) => {
+  console.log("Get all orders");
   const allUserorders = await Order.find()
     .populate("products.product")
     .populate("orderBy")
@@ -491,8 +556,8 @@ export const getOrder = asyncHandler(async (req, res) => {
 
 export const getOrderUserId = asyncHandler(async (req, res) => {
   // login user
-  const { _id } = req.params;
 
+  const { _id } = req.params;
   const userOrder = await Order.findOne({ orderby: _id })
     .populate("products.product")
     .populate("orderBy");

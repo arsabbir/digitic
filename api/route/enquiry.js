@@ -6,6 +6,7 @@ import {
   getAllEnquiry,
   getSingleEnquiry,
   updateEnquiry,
+  updateEnquiryStatus,
 } from "../controllers/enquiryController.js";
 import tokenVerify from "../middlewares/tokenVerify.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
@@ -16,13 +17,16 @@ const router = express.Router();
 router.use(tokenVerify);
 
 // create route
-router.route("/").get(getAllEnquiry).post(isAdmin,createEnquiry);
+router.route("/").get(getAllEnquiry).post(createEnquiry);
 router
   .route("/:id")
   .get(getSingleEnquiry)
-  .delete(isAdmin,deleteEnquiry)
-  .put(isAdmin,updateEnquiry)
-  .patch(isAdmin,updateEnquiry);
-
+  .delete(isAdmin, deleteEnquiry)
+  .put(isAdmin, updateEnquiry)
+  .patch(isAdmin, updateEnquiry);
+router
+  .route("/status/:id")
+  .patch(isAdmin, updateEnquiryStatus)
+  .put(isAdmin, updateEnquiryStatus);
 // export default router
 export default router;

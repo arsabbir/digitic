@@ -2,20 +2,21 @@ import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCustomer } from "../../features/customer/customerApiSlice.js";
-import { getCustomerState } from "../../features/customer/customerSlice.js";
+
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
 import { getproductState } from "../../features/product/productSlice.js";
-import { getAllColor } from "../../features/product/productApiSlice.js";
+import {
+  deleteColor,
+  getAllColor,
+} from "../../features/product/productApiSlice.js";
+import { Link } from "react-router-dom";
+import { sweetDelete } from "../../utils/SweetAlert.js";
 
 const ColorList = () => {
   const [search, setSearch] = useState(null);
   // hanlder section
-  const handleEditCustomer = () => {};
-
-  const customerHandleDelete = () => {};
 
   const handleSearch = () => {};
 
@@ -29,6 +30,10 @@ const ColorList = () => {
   }, [dispatch, colors, isError, isLoading, message]);
 
   const cols = [
+    {
+      name: "SNo",
+      selector: (row, index) => index + 1,
+    },
     {
       name: "Name",
       selector: (row) => row.name,
@@ -52,15 +57,15 @@ const ColorList = () => {
       name: "Action",
       selector: (row) => (
         <>
-          <button
+          <Link
+            to={`/color/${row._id}`}
             style={{ marginRight: "3px" }}
             className="btn btn-warning mr-2 btn-sm"
-            onClick={() => handleEditCustomer(row._id)}
           >
             <AiTwotoneEdit />
-          </button>
+          </Link>
           <button
-            onClick={() => customerHandleDelete(row._id)}
+            onClick={() => sweetDelete(dispatch(deleteColor(`${row._id}`)))}
             className="btn btn-danger  btn-sm"
           >
             <AiFillDelete className="" />
@@ -73,8 +78,8 @@ const ColorList = () => {
     <div>
       {" "}
       <DataTable
-        className="shadow-sm wolmart-table"
-        title="All Customer Data"
+        className="shadow-sm "
+        title="All Color Details"
         columns={cols}
         data={colors}
         theme="solarized"

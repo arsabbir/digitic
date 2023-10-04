@@ -1,12 +1,20 @@
 import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { Switch } from "antd";
 import { timeAgo } from "../../helper/timeAgo.js";
-import { getproductState } from "../../features/product/productSlice.js";
+import {
+  getproductState,
+  setMessageEmpty,
+} from "../../features/product/productSlice.js";
+
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { sweetDelete } from "../../utils/SweetAlert.js";
+import { deleteProCategory } from "../../features/product/productApiSlice.js";
+import { Link } from "react-router-dom";
 
 const ProCategory = () => {
   const [search, setSearch] = useState(null);
@@ -19,15 +27,19 @@ const ProCategory = () => {
 
   // useState section
   const dispatch = useDispatch();
-
   // selector
   const { proCategories, isError, isLoading, message } =
     useSelector(getproductState);
 
   // dipatch
+
   useEffect(() => {}, [dispatch, proCategories, isError, isLoading, message]);
 
   const cols = [
+    {
+      name: "SNo",
+      selector: (row, index) => index + 1,
+    },
     {
       name: "Name",
       selector: (row) => row.name,
@@ -51,15 +63,17 @@ const ProCategory = () => {
       name: "Action",
       selector: (row) => (
         <>
-          <button
+          <Link
+            to={`/category/${row._id}`}
             style={{ marginRight: "3px" }}
             className="btn btn-warning mr-2 btn-sm"
-            onClick={() => handleEditCustomer(row._id)}
           >
             <AiTwotoneEdit />
-          </button>
+          </Link>
           <button
-            onClick={() => customerHandleDelete(row._id)}
+            onClick={() =>
+              sweetDelete(dispatch(deleteProCategory(`${row._id}`)))
+            }
             className="btn btn-danger  btn-sm"
           >
             <AiFillDelete className="" />

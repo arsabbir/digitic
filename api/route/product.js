@@ -24,8 +24,7 @@ router.route("/wishlist").put(addWishlist).patch(addWishlist);
 // Routes for managing the rating
 router.route("/rating").put(rating).patch(rating);
 
-// Routes for managing images
-// router.route("/image/:id").put(ProductMulter,productImageUpload).patch(ProductMulter,productImageUpload);
+
 
 // routes for managing the single product(update,delete,show)
 router

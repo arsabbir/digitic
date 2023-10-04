@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { getAuthData } from "../../features/auth/authSlice.js";
 import { useEffect } from "react";
-import { createToast } from "../../utils/Toast.js";
-import { sweetAlertBasic } from "../../utils/SweetAlert.js";
+
+
 
 // yup configure
 let yupSchema = object({

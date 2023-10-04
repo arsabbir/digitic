@@ -43,7 +43,7 @@ const blogSchema = mongoose.Schema(
       type: String,
       default: "Admin",
     },
-    images: [],
+    photos: [],
   },
   {
     toJSON: {

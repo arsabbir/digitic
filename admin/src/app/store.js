@@ -6,6 +6,8 @@ import BlogSlice from "../features/blog/BlogSlice.js";
 import EnquirySlice from "../features/enquiry/EnquirySlice.jsx";
 import productSlice from "../features/product/productSlice.js";
 import uploadSlice from "../features/upload/uploadSlice.js";
+import couponSlice from "../features/coupon/couponSlice.js";
+import orderSlice from "../features/order/orderSlice.js";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +17,8 @@ const store = configureStore({
     Blog: BlogSlice,
     Enquiry: EnquirySlice,
     Upload: uploadSlice,
+    Coupon: couponSlice,
+    Order: orderSlice,
   },
   middleware: (getDefaultMiddlewares) => getDefaultMiddlewares(),
   devTools: true,

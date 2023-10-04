@@ -4,11 +4,6 @@ import { createSlug } from "../helper/slug.js";
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/User.js";
 
-cloudinary.config({
-  cloud_name: "drq2ieflq",
-  api_key: "718961483599887",
-  api_secret: "zaM4dfcS2djdofxgDNhLla_tABk",
-});
 
 /**
  * @DESC Get Single products data
@@ -50,15 +45,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Product already exists" });
   }
 
-  // file manage
-  //   let productPhotos = [];
-  //   if (req.files) {
-  //     for (let i = 0; i < req.files.length; i++) {
-  //       const result = await cloudinary.uploader.upload(req.files[i].path);
-  //       productPhotos.push(result.secure_url);
-  //     }
-  //   }
-  //   const result = await cloudinary.uploader.upload(req.file.path);
+
 
   productData.slug = createSlug(name);
 
@@ -82,8 +69,8 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     const publicId = product.photo.match(/\/([^/]+)$/)[1].split(".")[0];
     await cloudinary.uploader.destroy(publicId);
   }
-  console.log(productDelete);
-  res.status(200).json(productDelete);
+  
+  res.status(200).json({productDelete});
 });
 
 /**
@@ -293,44 +280,4 @@ export const rating = asyncHandler(async (req, res) => {
     .json({ finalProduct: updatedProduct, message: "Rating successful" });
 });
 
-// /**
-//  * @DESC Image Upload
-//  * @ROUTE /api/v1/product/image-upload
-//  * @method PUT/PATCH
-//  * @access public
-//  */
-// export const productImageUpload = asyncHandler(async (req, res) => {
-//   // get value
-//   const { id } = req.params;
 
-//   // check data
-//   const product = await Product.findById(id);
-
-//   // Product not found
-//   if (!product) {
-//     return res.status(200).json({ message: "Data not found" });
-//   }
-
-//   // File management
-
-//   let photos = [];
-//   if (req.files) {
-//     for (let i = 0; i < req.files.length; i++) {
-//       // upload image and wait for it to resolve
-//       try {
-//         const uploadedImage = await ImageUpload(req.files[i].path);
-//         // photos.push(uploadedImage);
-
-//         // Update the product with the uploaded image path
-//         const upImage = await Product.findByIdAndUpdate(product._id, {
-//           $push: { photos: uploadedImage },
-//         });
-//       } catch (error) {
-//         // Handle any errors that occurred during image upload
-//         console.error("Image upload error:", error);
-//       }
-//     }
-//   }
-
-//   return res.status(200).json({ message: "Image Upload Success" });
-// });

@@ -6,7 +6,6 @@ export const uploadImage = createAsyncThunk(
   "upload/uploadImage",
   async (data) => {
     try {
-     console.log(data);
       const response = await axios.post(`${BaseUrl}upload`, data, {
         withCredentials: true,
       });

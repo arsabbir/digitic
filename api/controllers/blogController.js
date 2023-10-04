@@ -10,7 +10,7 @@ import Blog from "../models/Blog.js";
 
 export const createBlog = asyncHandler(async (req, res) => {
   const { title, category, description } = req.body;
-
+  console.log(req.body.photos);
   // validation
   if (!title || !category || !description) {
     return res.status(400).json({ user, message: "All fields are required" });
@@ -45,7 +45,7 @@ export const getAllBlog = asyncHandler(async (req, res) => {
 export const getSingleBlog = asyncHandler(async (req, res) => {
   // get value
   const { id } = req.params;
-
+  console.log("getSingleBlog");
   //   check blog in database
   const getBlog = await Blog.findById(id)
     .populate("likes")
@@ -57,8 +57,9 @@ export const getSingleBlog = asyncHandler(async (req, res) => {
       numViews: 1,
     },
   });
+
   //   respnse
-  return res.status(400).json({ getBlog, message: "Get Single Blog Show" });
+  return res.status(200).json({ getBlog, message: "Get Single Blog Show" });
 });
 
 /**
@@ -71,7 +72,6 @@ export const getSingleBlog = asyncHandler(async (req, res) => {
 export const deleteBlog = asyncHandler(async (req, res) => {
   // get value
   const { id } = req.params;
-  console.log(id);
   // check user
   const blog = await Blog.findByIdAndDelete(id);
 
