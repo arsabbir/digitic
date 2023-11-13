@@ -22,6 +22,7 @@ export const getAllUser = asyncHandler(async (req, res) => {
       .json({ message: "User not found" })
       .select("-password");
   }
+
   return res.status(200).json({ users });
 });
 
@@ -307,7 +308,6 @@ export const addCartUser = asyncHandler(async (req, res) => {
       const cartProPrice = addCartPro.price;
       const count = cart[0].count;
 
-      console.log(count * cartProPrice);
       // If the product doesn't exist, add it to the cart
       const updatedCart = await Cart.findByIdAndUpdate(
         alreadyExistCart._id,
@@ -520,7 +520,6 @@ export const createOrder = asyncHandler(async (req, res) => {
  */
 
 export const getAllOrders = asyncHandler(async (req, res) => {
-  console.log("Get all orders");
   const allUserorders = await Order.find()
     .populate("products.product")
     .populate("orderBy")
@@ -556,16 +555,18 @@ export const getOrder = asyncHandler(async (req, res) => {
 
 export const getOrderUserId = asyncHandler(async (req, res) => {
   // login user
+  const { id } = req.params;
 
-  const { _id } = req.params;
-  const userOrder = await Order.findOne({ orderby: _id })
+  const userOrder = await Order.findOne({ orderBy: id })
     .populate("products.product")
     .populate("orderBy");
+
   if (!userOrder) {
-    return res.json({ message: "This User not order" });
+    return res.status(400).json({ message: "This User not order" });
+  } else {
+    // response
+    return res.status(200).json({ userOrder, message: "User Order Show" });
   }
-  // response
-  return res.json({ userOrder, message: "User Order Show" });
 });
 
 /**

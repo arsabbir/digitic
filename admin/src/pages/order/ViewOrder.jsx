@@ -58,7 +58,7 @@ const ViewOrder = () => {
 
     {
       name: "Created At",
-      selector: (row) => timeAgo(row.date),
+      selector: (row) => timeAgo(row.product.createdAt),
     },
     
     {
@@ -87,7 +87,7 @@ const ViewOrder = () => {
     <>
       <DataTable
         className="shadow-sm digitic-table"
-        title="All Customer Data"
+        title="View Order"
         columns={cols}
         data={singleUserOrder?.products}
         theme="solarized"

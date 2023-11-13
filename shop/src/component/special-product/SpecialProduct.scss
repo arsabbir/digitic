@@ -1,0 +1,126 @@
+:root {
+  --color-131921: #131921;
+  --color-3b4149: #3b4149;
+  --color-ffc107: #ffc107;
+  --color-232f3e: #232f3e;
+  --color-212529: #212529;
+  --color-febd69: #febd69;
+  --color-1c1b1b: #1c1b1b;
+  --color-f5f5f7: #f5f5f7;
+  --color-ededed: #ededed;
+  --color-777777: #777777;
+}
+
+#SpecialProduct {
+  padding: 80px 0;
+  background-color: var(--color-f5f5f7);
+  .col_wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 17px;
+    position: relative;
+
+    .card {
+      .product_slider {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        .card_img {
+          position: relative;
+
+          .wishlist {
+            top: 5px;
+            right: 5px;
+            button {
+              border: none;
+              font-size: 18px;
+              border-radius: 50%;
+              background-color: transparent;
+              padding: 2px 5px;
+              margin: auto;
+              text-align: center;
+              vertical-align: baseline;
+              align-items: center;
+              &:hover {
+                background-color: var(--color-febd69);
+              }
+            }
+          }
+          .discount_per {
+            top: 10px;
+            left: 10px;
+            background-color: var(--color-febd69);
+            opacity: 1;
+          }
+
+          .product_hover {
+            position: absolute;
+            top: 40px;
+            right: 0px;
+            display: none;
+            opacity: 0;
+            transition: 0.3s;
+            button {
+              font-size: 18px;
+              border-radius: 50%;
+              &:hover {
+                background-color: var(--color-febd69);
+              }
+            }
+          }
+        }
+      }
+
+      .card-body {
+        .brand {
+          color: #bf4800;
+          line-height: 24px;
+          font-weight: 400;
+          margin: 0 0 12px;
+          opacity: 1;
+          font-size: 13px;
+        }
+        .card-title {
+          a {
+            font-size: 15px;
+            line-height: 22px;
+            font-weight: 500;
+            color: #1c1b1b;
+          }
+        }
+        .rating {
+          margin: 10px 0;
+        }
+        .regular_price {
+          text-decoration: line-through;
+        }
+        .sale_price {
+          color: #e02b40;
+          margin-left: 10px;
+        }
+        .day_count {
+          font-size: 13px;
+          line-height: 20px;
+          .num {
+            margin-right: 4px !important;
+            display: inline-block !important;
+          }
+        }
+        .btn {
+          background-color: #232f3e;
+          border: none;
+          &:hover {
+            background-color: var(--color-febd69);
+          }
+        }
+      }
+      &:hover .card_img .product_hover {
+        display: block;
+        opacity: 1;
+      }
+      &:hover .card_img .discount_per {
+        display: none;
+        opacity: 0;
+      }
+    }
+  }
+}

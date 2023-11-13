@@ -66,7 +66,7 @@ const Orders = () => {
     },
     {
       name: "Created At",
-      selector: (row) => row?.orderBy?.createdAt
+      selector: (row) => row?.orderBy?.createdAt,
     },
 
     {
